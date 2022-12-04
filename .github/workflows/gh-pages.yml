@@ -1,0 +1,32 @@
+---
+name: push to gh-pages
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  All_ON_PUSH:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: front end build ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+      - run: cd src/WTA.Web.UI/
+      - run: npm install
+      - run: npm run build
+      - name: back end build
+        uses: actions/setup-dotnet@v3
+      - run: dotnet restore
+      - run: cd src/WTA.Web/
+      - run: dotnet publish -c Release -o ../../publish -r win-x64 --self-contained true -p:PublishSingleFile=true
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
