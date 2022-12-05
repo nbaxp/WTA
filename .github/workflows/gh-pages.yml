@@ -17,14 +17,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-      - run: cd src/WTA.Web.UI/
-      - run: npm install
-      - run: npm run build
+      - run: |
+          cd src/WTA.Web.UI/
+          npm install
+          npm run build
       - name: back end build
         uses: actions/setup-dotnet@v3
-      - run: dotnet restore
-      - run: cd src/WTA.Web/
-      - run: dotnet publish -c Release -o ../../publish -r win-x64 --self-contained true -p:PublishSingleFile=true
+      - run: |
+          dotnet restore
+          cd src/WTA.Web/
+          dotnet publish -c Release -o ../../publish -r win-x64 --self-contained true -p:PublishSingleFile=true
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
