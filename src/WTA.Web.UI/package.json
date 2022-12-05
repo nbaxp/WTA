@@ -2,9 +2,9 @@
   "private": "true",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "preview": "vite preview",
-    "prepare": "husky install",
+    "prepare": "cd ../../ && husky install src/WTA.Web.UI.husky",
     "lint": "npm run eslint && npm run stylelint && npm run markdownlint && npm run prettier",
     "eslint": "eslint --fix --ext .js,.ts",
     "stylelint": "stylelint **/*.{css,less,scss} --fix",
