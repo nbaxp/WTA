@@ -54,10 +54,6 @@ public static class WebApplicationExtensions
       //var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
 
       //app.MapControllerRoute(
-      //    name: "area",
-      //    pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
-
-      //app.MapControllerRoute(
       //    name: "default",
       //    pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
 
@@ -65,6 +61,7 @@ public static class WebApplicationExtensions
 
       // endpoints.MapSwagger();
       // endpoints.MapHub<TestHub>("/hub");
+      app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
       app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
     });
   }

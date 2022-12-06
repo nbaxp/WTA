@@ -1,5 +1,5 @@
 using Omu.ValueInjecter;
-using WTA.Application.Interfaces;
+using WTA.Application.Abstractions;
 
 namespace WTA.Infrastructure.Mapper;
 

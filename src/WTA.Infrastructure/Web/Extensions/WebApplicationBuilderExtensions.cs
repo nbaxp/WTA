@@ -1,16 +1,22 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WTA.Application.Data;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using WTA.Application.Abstractions;
+using WTA.Application.Abstractions.Data;
 using WTA.Application.Domain.Users;
-using WTA.Application.Interfaces;
 using WTA.Application.Services;
 using WTA.Infrastructure.Data;
 using WTA.Infrastructure.EventBus;
 using WTA.Infrastructure.Mapper;
 using WTA.Infrastructure.Services;
+using WTA.Infrastructure.Web.GenericControllers;
 using WTA.Infrastructure.Web.Routing;
 
 namespace WTA.Infrastructure.Web.Extensions;
@@ -19,6 +25,18 @@ public static class WebApplicationBuilderExtensions
 {
   public static void Config(this WebApplicationBuilder builder)
   {
+    builder.Services.AddWebEncoders(options => options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
+    builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+    {
+      options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+      options.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+      options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
+    builder.Services.Configure<FormOptions>(options =>
+    {
+      options.ValueCountLimit = int.MaxValue;
+      options.MultipartBodyLengthLimit = long.MaxValue;
+    });
     AddServices(builder);
     AddDbContext(builder);
     AddMvc(builder);
@@ -27,6 +45,7 @@ public static class WebApplicationBuilderExtensions
 
   private static void AddServices(WebApplicationBuilder builder)
   {
+    builder.Services.AddHttpClient();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddEventBus();
     builder.Services.AddSingleton<ILinqInclude, DefaultLinqInclude>();
@@ -68,7 +87,9 @@ public static class WebApplicationBuilderExtensions
       //options.ModelMetadataDetailsProviders.Insert(0, new CustomIDisplayMetadataProvider());
       // 小写 + 连字符格式
       options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
-    });
+    })
+    .ConfigureApplicationPartManager(o => o.FeatureProviders.Add(new GenericControllerFeatureProvider()))
+    .AddControllersAsServices();// must after ConfigureApplicationPartManager
   }
 
   private static void AddSwagger(WebApplicationBuilder builder)

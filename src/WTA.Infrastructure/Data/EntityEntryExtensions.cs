@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using WTA.Application.Core;
+using WTA.Application.Abstractions.Domain;
+using WTA.Application.Abstractions.Extensions;
 using WTA.Application.Domain;
-using WTA.Application.Extensions;
 
 namespace WTA.Infrastructure.Data;
 

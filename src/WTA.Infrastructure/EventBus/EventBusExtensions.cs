@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using WTA.Application.EventBus;
+using WTA.Application.Abstractions.EventBus;
 
 namespace WTA.Infrastructure.EventBus;
 

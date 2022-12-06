@@ -1,4 +1,4 @@
-using WTA.Application.Core;
+using WTA.Application.Abstractions.Domain;
 using WTA.Application.Domain.Users;
 
 namespace WTA.Application.Domain.Blogs;

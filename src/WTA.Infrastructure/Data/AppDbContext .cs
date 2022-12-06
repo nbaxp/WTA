@@ -2,7 +2,7 @@ using LinqToDB.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WTA.Application.Interfaces;
+using WTA.Application.Abstractions;
 
 namespace WTA.Infrastructure.Data;
 

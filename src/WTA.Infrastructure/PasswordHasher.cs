@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using WTA.Application.Interfaces;
+using WTA.Application.Abstractions;
 
 namespace WTA.Infrastructure;
 

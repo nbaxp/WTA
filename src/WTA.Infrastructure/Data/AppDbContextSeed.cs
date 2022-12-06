@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using WTA.Application.Abstractions;
+using WTA.Application.Abstractions.Extensions;
 using WTA.Application.Domain.Blogs;
 using WTA.Application.Domain.Users;
-using WTA.Application.Extensions;
-using WTA.Application.Interfaces;
 
 namespace WTA.Infrastructure.Data;
 

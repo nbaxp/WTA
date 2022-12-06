@@ -4,7 +4,7 @@ using Volo.Abp.Guids;
 
 namespace WTA.Infrastructure.Services
 {
-  public class DefaultGuidGenerator : Application.Interfaces.IGuidGenerator
+  public class DefaultGuidGenerator : Application.Abstractions.IGuidGenerator
   {
     private SequentialGuidGenerator _sequentialGuidGenerator { get; }
 

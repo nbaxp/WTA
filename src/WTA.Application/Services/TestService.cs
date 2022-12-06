@@ -1,4 +1,4 @@
-using WTA.Application.Data;
+using WTA.Application.Abstractions.Data;
 using WTA.Application.Domain.Users;
 
 namespace WTA.Application.Services;
