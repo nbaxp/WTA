@@ -2,7 +2,9 @@ using WTA.Application.Abstractions.Domain;
 
 namespace WTA.Application.Domain.Users;
 
-public class UserCenterAttribute : ControllerAttribute
+public class UserCenterAttribute : MetaAttribute
 {
-  public UserCenterAttribute() : base("Admin", "用户中心") { }
+  public UserCenterAttribute() : base("uc")
+  {
+  }
 }

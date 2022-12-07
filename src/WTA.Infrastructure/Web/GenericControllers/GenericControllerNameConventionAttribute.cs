@@ -7,12 +7,10 @@ public class GenericControllerNameConvention : Attribute, IControllerModelConven
 {
   public void Apply(ControllerModel controller)
   {
-    if (controller.ControllerType.GetGenericTypeDefinition() != typeof(GenericWebApiController<,,>))
+    if (controller.ControllerType.GetGenericTypeDefinition() == typeof(GenericWebController<,,>))
     {
-      return;
+      var entityType = controller.ControllerType.GenericTypeArguments[0];
+      controller.ControllerName = entityType.Name;
     }
-
-    var entityType = controller.ControllerType.GenericTypeArguments[0];
-    controller.ControllerName = entityType.Name;
   }
 }

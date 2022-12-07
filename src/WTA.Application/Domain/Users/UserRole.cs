@@ -2,6 +2,7 @@ using WTA.Application.Abstractions.Domain;
 
 namespace WTA.Application.Domain.Users;
 
+[UserCenterAttribute]
 public class UserRole : BaseEntity, IAssociation
 {
   public Guid UserId { get; set; }

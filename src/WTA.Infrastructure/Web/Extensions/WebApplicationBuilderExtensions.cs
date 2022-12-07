@@ -84,6 +84,7 @@ public static class WebApplicationBuilderExtensions
     // MVC
     builder.Services.AddMvc(options =>
     {
+      options.Conventions.Add(new GenericControllerRouteConvention());
       //options.ModelMetadataDetailsProviders.Insert(0, new CustomIDisplayMetadataProvider());
       // 小写 + 连字符格式
       options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));

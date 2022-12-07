@@ -14,7 +14,7 @@ public class TestService : ITestService<User>
 
   public IList<User> Test()
   {
-    var users = _respository.Query()
+    var users = _respository.Tracking()
       .Include(o => o.UserRoles)
       .ThenInclude(o => o.Role)
       .ThenInclude(o => o.RolePermissions)
