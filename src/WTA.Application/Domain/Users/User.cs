@@ -5,7 +5,7 @@ using WTA.Application.Domain.Blogs;
 
 namespace WTA.Application.Domain.Users;
 
-[UserCenterAttribute]
+[UserCenter]
 [Display(Name = "用户")]
 public class User : BaseEntity, IConcurrencyStamp, IAudit
 {

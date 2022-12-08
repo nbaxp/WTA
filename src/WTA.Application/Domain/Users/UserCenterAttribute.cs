@@ -4,7 +4,7 @@ namespace WTA.Application.Domain.Users;
 
 public class UserCenterAttribute : MetaAttribute
 {
-  public UserCenterAttribute() : base("uc")
+  public UserCenterAttribute() : base("UserCenter")
   {
   }
 }

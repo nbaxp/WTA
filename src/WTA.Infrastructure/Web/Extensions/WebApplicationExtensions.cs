@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +16,11 @@ public static class WebApplicationExtensions
     if (app.Environment.IsDevelopment())
     {
       app.UseExceptionHandler("/Error");
-      app.UseSwagger();
-      app.UseSwaggerUI();
     }
     UseStaticFiles(app);
     UseRouting(app);
+    UseSwagger(app);
+    UseLocalization(app);
     UseDatabase(app);
     app.UseAuthorization();
   }
@@ -45,24 +46,28 @@ public static class WebApplicationExtensions
     });
   }
 
+  private static void UseLocalization(WebApplication app)
+  {
+    app.UseRequestLocalization();
+  }
+
   private static void UseRouting(WebApplication app)
   {
     app.UseRouting();
-    app.UseEndpoints(endpoints =>
+    app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+    app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+  }
+
+  private static void UseSwagger(WebApplication app)
+  {
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-      //var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-      //var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
-
-      //app.MapControllerRoute(
-      //    name: "default",
-      //    pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
-
-      //endpoints.MapDynamicControllerRoute<TestTransformer>("{culture:slugify=zh-Hans}/{controller:slugify=Home}/{action:slugify=Index}");
-
-      // endpoints.MapSwagger();
-      // endpoints.MapHub<TestHub>("/hub");
-      app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-      app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+      var apiDescriptionGroups = app.Services.GetRequiredService<IApiDescriptionGroupCollectionProvider>().ApiDescriptionGroups.Items;
+      foreach (var description in apiDescriptionGroups)
+      {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName ?? "default"}/swagger.json", description.GroupName ?? "默认分组");
+      }
     });
   }
 
