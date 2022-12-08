@@ -1845,6 +1845,25 @@
           }
         }
       },
+      "OrchardCore.Localization.Abstractions/1.5.0": {
+        "runtime": {
+          "lib/net6.0/OrchardCore.Localization.Abstractions.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
+          }
+        }
+      },
+      "OrchardCore.Localization.Core/1.5.0": {
+        "dependencies": {
+          "OrchardCore.Localization.Abstractions": "1.5.0"
+        },
+        "runtime": {
+          "lib/net6.0/OrchardCore.Localization.Core.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
+          }
+        }
+      },
       "Pomelo.EntityFrameworkCore.MySql/7.0.0-alpha.1": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "7.0.0",
@@ -2298,7 +2317,7 @@
           }
         }
       },
-      "Volo.Abp.Core/7.0.0-rc.2": {
+      "Volo.Abp.Core/7.0.0-rc.3": {
         "dependencies": {
           "JetBrains.Annotations": "2022.1.0",
           "Microsoft.Extensions.Configuration.CommandLine": "7.0.0",
@@ -2325,9 +2344,9 @@
           }
         }
       },
-      "Volo.Abp.Guids/7.0.0-rc.2": {
+      "Volo.Abp.Guids/7.0.0-rc.3": {
         "dependencies": {
-          "Volo.Abp.Core": "7.0.0-rc.2"
+          "Volo.Abp.Core": "7.0.0-rc.3"
         },
         "runtime": {
           "lib/netstandard2.0/Volo.Abp.Guids.dll": {
@@ -2352,11 +2371,12 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.0",
           "Microsoft.EntityFrameworkCore.Sqlite": "7.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "7.0.0",
+          "OrchardCore.Localization.Core": "1.5.0",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0-alpha.1",
           "Swashbuckle.AspNetCore": "6.4.0",
           "System.Linq.Dynamic.Core": "1.2.23",
           "ValueInjecter": "3.2.0",
-          "Volo.Abp.Guids": "7.0.0-rc.2",
+          "Volo.Abp.Guids": "7.0.0-rc.3",
           "WTA.Application": "1.0.0",
           "linq2db.EntityFrameworkCore": "7.0.0"
         },
@@ -2851,6 +2871,20 @@
       "path": "npgsql.entityframeworkcore.postgresql/7.0.0",
       "hashPath": "npgsql.entityframeworkcore.postgresql.7.0.0.nupkg.sha512"
     },
+    "OrchardCore.Localization.Abstractions/1.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hiGu3jxdkUQIygPGXUT2RGbol3ZnoQDbUcystyQ6sBIK+qBPkB5ELV7ZIVQYM/hSDMSQ5ho5eYHpUEdpZ5Ff5A==",
+      "path": "orchardcore.localization.abstractions/1.5.0",
+      "hashPath": "orchardcore.localization.abstractions.1.5.0.nupkg.sha512"
+    },
+    "OrchardCore.Localization.Core/1.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5sq4CgZ29do7/CN7UL6k4o7+nfI4i+kqPe5BI9xrjQwO5CGUyETDyom//6ixTuTaPQ+VRrsCDlnmHLe9Wv+gWw==",
+      "path": "orchardcore.localization.core/1.5.0",
+      "hashPath": "orchardcore.localization.core.1.5.0.nupkg.sha512"
+    },
     "Pomelo.EntityFrameworkCore.MySql/7.0.0-alpha.1": {
       "type": "package",
       "serviceable": true,
@@ -3327,19 +3361,19 @@
       "path": "valueinjecter/3.2.0",
       "hashPath": "valueinjecter.3.2.0.nupkg.sha512"
     },
-    "Volo.Abp.Core/7.0.0-rc.2": {
+    "Volo.Abp.Core/7.0.0-rc.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-HRA+FWYZgPCdh4NP8WN7d8r1PqUIBpDA4xoClQLmNYlPs8doGmbN3DihhMGoEBQ9hLsO7N71MhmqLv/lxB04yg==",
-      "path": "volo.abp.core/7.0.0-rc.2",
-      "hashPath": "volo.abp.core.7.0.0-rc.2.nupkg.sha512"
+      "sha512": "sha512-flmbJwzrnXAIE82mw7ytDvp+H78tfCIJBDtuAIj5vQAu2ppLW0sT5enYYZgwfz2WPegZr+qYXiPm/X9M2thHIg==",
+      "path": "volo.abp.core/7.0.0-rc.3",
+      "hashPath": "volo.abp.core.7.0.0-rc.3.nupkg.sha512"
     },
-    "Volo.Abp.Guids/7.0.0-rc.2": {
+    "Volo.Abp.Guids/7.0.0-rc.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-qX7BLxb+v1EB2Ztls/HTNhSHKgR6+18SLBUId3xmk6g65HIgggbHAmg3WZ98eW/vfRr+Cx6w9Vcj0QxYPS5FCQ==",
-      "path": "volo.abp.guids/7.0.0-rc.2",
-      "hashPath": "volo.abp.guids.7.0.0-rc.2.nupkg.sha512"
+      "sha512": "sha512-fkTvTijUrdU/j9d1ICMhUFC4DZ72rK+Yxk3kHbeTAqEttW0C+ps2xj4sWLti5iewEfjyaevDrFjaPy7AkMPwWA==",
+      "path": "volo.abp.guids/7.0.0-rc.3",
+      "hashPath": "volo.abp.guids.7.0.0-rc.3.nupkg.sha512"
     },
     "WTA.Application/1.0.0": {
       "type": "project",
