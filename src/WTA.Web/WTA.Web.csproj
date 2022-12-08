@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\en.po" />
+    <Resource Include="Resources\zh.po" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WTA.Application\WTA.Application.csproj" />
     <ProjectReference Include="..\WTA.Infrastructure\WTA.Infrastructure.csproj" />
   </ItemGroup>

@@ -19,8 +19,8 @@ public static class WebApplicationExtensions
     }
     UseStaticFiles(app);
     UseRouting(app);
-    UseSwagger(app);
     UseLocalization(app);
+    UseSwagger(app);
     UseDatabase(app);
     app.UseAuthorization();
   }
@@ -46,16 +46,16 @@ public static class WebApplicationExtensions
     });
   }
 
-  private static void UseLocalization(WebApplication app)
-  {
-    app.UseRequestLocalization();
-  }
-
   private static void UseRouting(WebApplication app)
   {
     app.UseRouting();
     app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
     app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+  }
+
+  private static void UseLocalization(WebApplication app)
+  {
+    app.UseRequestLocalization();
   }
 
   private static void UseSwagger(WebApplication app)
@@ -66,7 +66,14 @@ public static class WebApplicationExtensions
       var apiDescriptionGroups = app.Services.GetRequiredService<IApiDescriptionGroupCollectionProvider>().ApiDescriptionGroups.Items;
       foreach (var description in apiDescriptionGroups)
       {
-        options.SwaggerEndpoint($"/swagger/{description.GroupName ?? "default"}/swagger.json", description.GroupName ?? "默认分组");
+        if (description.GroupName is not null)
+        {
+          options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName);
+        }
+        else
+        {
+          options.SwaggerEndpoint($"/swagger/default/swagger.json", "Default");
+        }
       }
     });
   }

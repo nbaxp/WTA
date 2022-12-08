@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Globalization;
@@ -43,10 +45,9 @@ public static class WebApplicationBuilderExtensions
       options.ValueCountLimit = int.MaxValue;
       options.MultipartBodyLengthLimit = long.MaxValue;
     });
-    builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Resources");//po
     AddServices(builder);
-    AddMvc(builder);
     AddLocalization(builder);
+    AddMvc(builder);
     AddSwagger(builder);
     AddDbContext(builder);
   }
@@ -69,6 +70,7 @@ public static class WebApplicationBuilderExtensions
   private static void AddMvc(WebApplicationBuilder builder)
   {
     builder.Services.AddRouting(options => options.ConstraintMap["slugify"] = typeof(SlugifyParameterTransformer));
+
     // MVC
     builder.Services.AddMvc(options =>
     {
@@ -77,6 +79,7 @@ public static class WebApplicationBuilderExtensions
       // 小写 + 连字符格式
       options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
     })
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization(options =>
     {
       options.DataAnnotationLocalizerProvider = (type, factory) =>
@@ -91,19 +94,26 @@ public static class WebApplicationBuilderExtensions
 
   private static void AddLocalization(WebApplicationBuilder builder)
   {
-    builder.Services.AddPortableObjectLocalization();
-
+    builder.Services.AddSingleton<IStringLocalizer>(o => o.GetRequiredService<IStringLocalizer<Resource>>());
+    builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Resources");
     builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
       var supportedCultures = new List<CultureInfo>
       {
-        new CultureInfo("zh-Hans-CN"),
-        new CultureInfo("en-US")
+        new CultureInfo("zh"),
+        new CultureInfo("en")
       };
 
       options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
       options.SupportedCultures = supportedCultures;
       options.SupportedUICultures = supportedCultures;
+      //options.RequestCultureProviders.Clear();
+      //options.RequestCultureProviders.Add(new RouteDataRequestCultureProvider
+      //{
+      //  Options = options,
+      //  RouteDataStringKey = "lang",
+      //  UIRouteDataStringKey = "lang"
+      //});
     });
   }
 

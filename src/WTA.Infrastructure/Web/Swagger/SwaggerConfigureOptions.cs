@@ -19,7 +19,14 @@ public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>
   {
     foreach (var description in provider.ApiDescriptionGroups.Items)
     {
-      options.SwaggerDoc(description.GroupName ?? "default", new OpenApiInfo { Title = description.GroupName ?? "默认分组" });
+      if (description.GroupName is not null)
+      {
+        options.SwaggerDoc(description.GroupName, new OpenApiInfo { Title = description.GroupName });
+      }
+      else
+      {
+        options.SwaggerDoc("default", new OpenApiInfo { Title = "Default" });
+      }
     }
   }
 }
