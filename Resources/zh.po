@@ -1,0 +1,134 @@
+# zh po
+
+msgid test
+msgstr 测试
+
+## System.ComponentModel.Annotations 
+# https://github.com/dotnet/runtime/blob/main/src/libraries/System.ComponentModel.Annotations/src/Resources/Strings.resx
+
+msgid "CompareAttribute"
+msgstr "“{0}” 和 “{1}” 不匹配。"
+
+msgid "FileExtensionsAttribute"
+msgstr "字段 “{0}” 只接受一下扩展名的文件: {1}"
+
+msgid "MaxLengthAttribute"
+msgstr "字段 “{0}” 的最大长度为 {1}。"
+
+msgid "MinLengthAttribute"
+msgstr "字段 “{0}” 的最小长度为 {1}。"
+
+msgid "RangeAttribute"
+msgstr "字段 “{0}” 必需在 {1} 和 {2} 之间。"
+
+msgid "RegularExpressionAttribute"
+msgstr "字段 “{0}” 必需匹配 {1}。"
+
+msgid "RequiredAttribute"
+msgstr "字段 “{0}” 是必需的。"
+
+msgid "StringLengthAttribute"
+msgstr "字段 “{0}” 的最大长度为 {1}。"
+
+msgid "StringLengthAttributeIncludingMinimum"
+msgstr "字段 “{0}” 的长度在 {2} 和 {1} 之间。"
+
+msgid "DataTypeAttribute_CreditCard"
+msgstr "字段 “{0}” 不是有效的信用卡号码。"
+
+msgid "DataTypeAttribute_EmailAddress"
+msgstr "字段 “{0}” 不是有效的 Email 地址。"
+
+msgid "DataTypeAttribute_PhoneNumber"
+msgstr "字段 “{0}” 不是有效的手机号码。"
+
+msgid "DataTypeAttribute_Url"
+msgstr "字段 “{0}” 不是有效的 Url。"
+
+msgid "DataTypeAttribute_Upload"
+msgstr "字段 “{0}” 的扩展名必须为：{1} 。"
+
+msgid "DataTypeAttribute_DateTime"
+msgstr "字段 “{0}” 不是有效的日期格式。"
+
+msgid "CustomValidationAttribute"
+msgstr "“{0}” 是无效的。"
+
+msgid "ValidationAttribute"
+msgstr "字段 “{0}” 是无效的。"
+
+## Layout
+
+msgid "Name"
+msgstr "王刚的博客"
+
+msgid "Copyright"
+msgstr "©2020-{0} 版权所有"
+
+msgid "Register"
+msgstr "注册"
+
+msgid "ForgotPassword"
+msgstr "忘记密码？"
+
+msgid "Confirm"
+msgstr "确定"
+
+msgid "Login"
+msgstr "登录"
+
+msgid "ExternalLogin"
+msgstr "社交帐号登录"
+
+msgid "Logout"
+msgstr "退出"
+
+msgid "UserCenter"
+msgstr "个人中心"
+
+msgid "Settings"
+msgstr "设置"
+
+## List
+
+msgid "Operations"
+msgstr "操作"
+
+msgid "Create"
+msgstr "新建"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Delete"
+msgstr "删除"
+
+## model
+
+### LoginModel
+
+msgid "UserName"
+msgstr "用户名"
+
+msgid "UserName_Description"
+msgstr "用户名规则"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "RememberMe"
+msgstr "记住我"
+
+msgid "Option1"
+msgstr "选项一"
+
+### Register
+
+msgid "VerificationCode"
+msgstr "验证码"
+
+msgid "UserNameDescription"
+msgstr "用户名注意事项"
+
+msgid "IsUserNameAvailable"
+msgstr "用户名已存在"
