@@ -1,5 +1,5 @@
 using WTA.Application.Abstractions.Data;
-using WTA.Application.Domain.Users;
+using WTA.Application.Domain.System;
 
 namespace WTA.Application.Services;
 
@@ -14,7 +14,7 @@ public class TestService : ITestService<User>
 
   public IList<User> Test()
   {
-    var users = _respository.Tracking()
+    var users = _respository.Query()
       .Include(o => o.UserRoles)
       .ThenInclude(o => o.Role)
       .ThenInclude(o => o.RolePermissions)

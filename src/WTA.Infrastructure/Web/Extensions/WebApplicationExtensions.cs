@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WTA.Infrastructure.Data;
+using Microsoft.Extensions.Options;
+using WTA.Application.Abstractions.Data;
 
 namespace WTA.Infrastructure.Web.Extensions;
 
@@ -21,8 +22,8 @@ public static class WebApplicationExtensions
     UseRouting(app);
     UseLocalization(app);
     UseSwagger(app);
+    UseAuthorization(app);
     UseDatabase(app);
-    app.UseAuthorization();
   }
 
   private static void UseStaticFiles(WebApplication app)
@@ -49,13 +50,13 @@ public static class WebApplicationExtensions
   private static void UseRouting(WebApplication app)
   {
     app.UseRouting();
-    app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-    app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+    app.MapControllerRoute(name: "default", pattern: "{culture:slugify=zh}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
   }
 
   private static void UseLocalization(WebApplication app)
   {
-    app.UseRequestLocalization();
+    var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
+    app.UseRequestLocalization(localizationOptions);
   }
 
   private static void UseSwagger(WebApplication app)
@@ -78,13 +79,20 @@ public static class WebApplicationExtensions
     });
   }
 
+  private static void UseAuthorization(WebApplication app)
+  {
+    app.UseCors();
+    app.UseAuthentication();
+    app.UseAuthorization();
+  }
+
   private static void UseDatabase(WebApplication app)
   {
     using var scope = app.Services.CreateScope();
     using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
     if (db.Database.EnsureCreated())
     {
-      scope.ServiceProvider.GetRequiredService<AppDbContextSeed>().Seed().Wait();
+      scope.ServiceProvider.GetRequiredService<IDbSeed>().Seed().Wait();
     }
   }
 }

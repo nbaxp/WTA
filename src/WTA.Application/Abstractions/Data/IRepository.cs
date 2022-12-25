@@ -4,13 +4,13 @@ public interface IRepository<T> where T : class
 {
   ValueTask<T?> FindAsync(Guid id, CancellationToken cancellationToken = default);
 
-  IQueryable<T> NoTracking();
+  IQueryable<T> AsNoTracking();
 
   Task AddAsync(T entity, CancellationToken cancellationToken = default);
 
   Task AddRangeAsync(T[] entities, CancellationToken cancellationToken = default);
 
-  IQueryable<T> Tracking();
+  IQueryable<T> Query();
 
   void Remove(T entity);
 

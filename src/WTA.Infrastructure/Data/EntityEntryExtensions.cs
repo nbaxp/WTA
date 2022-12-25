@@ -50,7 +50,7 @@ public static class EntityEntryExtensions
     }
   }
 
-  public static void UpdateEvent(this IEnumerable<EntityEntry> entries, AppDbContext dbContext)
+  public static void UpdateEvent(this IEnumerable<EntityEntry> entries, DefaultDbContext dbContext)
   {
     foreach (var item in entries)
     {

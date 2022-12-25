@@ -1,15 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
+using WTA.Infrastructure.Web.Extensions;
+using WTA.Web.Models;
 
-namespace WTA.Web.Controllers
+namespace WTA.Web.Controllers;
+
+//[Route("api/[controller]/[action]")]
+//[ApiController]
+public class TestApiController : Controller
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  public class TestApiController : ControllerBase
+  [HttpGet]
+  public IActionResult Index(TestModel model)
   {
-    [HttpGet]
-    public string Get()
+    return Json(new
     {
-      return "Test Api Controller";
-    }
+      Model = model,
+      Errors = ViewData.ModelState.ToErrors(),
+      Schema = ViewData.ModelMetadata.GetSchema(this.HttpContext.RequestServices)
+    });
   }
 }

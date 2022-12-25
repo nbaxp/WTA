@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WTA.Application.Domain;
 using WTA.Application.Domain.Blogs;
-using WTA.Application.Domain.Users;
+using WTA.Application.Domain.System;
 
 namespace WTA.Infrastructure.Data;
 

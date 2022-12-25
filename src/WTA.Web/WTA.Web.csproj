@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\en.po" />
-    <Resource Include="Resources\zh.po" />
+    <None Remove="Resources\en.po" />
+    <None Remove="Resources\zh.po" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\en.po" />
+    <EmbeddedResource Include="Resources\zh.po" />
   </ItemGroup>
 
   <ItemGroup>

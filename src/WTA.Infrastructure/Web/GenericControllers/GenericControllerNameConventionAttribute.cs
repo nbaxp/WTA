@@ -9,14 +9,14 @@ public class GenericControllerNameConventionAttribute : Attribute, IControllerMo
 {
   public void Apply(ControllerModel controller)
   {
-    if (controller.ControllerType.GetGenericTypeDefinition() != typeof(GenericWebController<,,>))
+    if (controller.ControllerType.GetGenericTypeDefinition() != typeof(GenericController<,,>))
     {
       return;
     }
 
     var entityType = controller.ControllerType.GenericTypeArguments[0];
     controller.ControllerName = entityType.Name;
-    var groupName = entityType.GetCustomAttribute<MetaAttribute>()?.Group;
+    var groupName = entityType.GetCustomAttribute<ResourceAttribute>()?.Group;
     if (!string.IsNullOrEmpty(groupName))
     {
       controller.ApiExplorer.GroupName = groupName;

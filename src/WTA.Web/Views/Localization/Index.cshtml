@@ -1,0 +1,6 @@
+@using System.Globalization;
+@{
+    Layout = null;
+}
+@Model
+<a href="@Url.Action(null,null,new{culture = CultureInfo.CurrentCulture.Name})">@Thread.CurrentThread.CurrentCulture.NativeName</a>

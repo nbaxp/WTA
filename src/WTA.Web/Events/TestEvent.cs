@@ -1,5 +1,5 @@
 using WTA.Application.Abstractions.EventBus;
-using WTA.Application.Domain.Users;
+using WTA.Application.Domain.System;
 
 namespace WTA.Web.Events
 {

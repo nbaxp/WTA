@@ -16,14 +16,16 @@ public static class ModelMetadataExtensions
   {
     var modelType = meta.UnderlyingOrModelType;
 
-    var schema = new Dictionary<string, object>();
-    schema.Add("title", meta.GetDisplayName());
-    schema.Add("description", meta.Description!);
-    schema.Add("format", meta.DataTypeName?.ToLowerCamelCase()!);
-    schema.Add("template", meta.TemplateHint?.ToLowerCamelCase()!);
-    schema.Add(nameof(meta.ShowForDisplay), meta.ShowForDisplay);
-    schema.Add(nameof(meta.ShowForEdit), meta.ShowForEdit);
-    schema.Add(nameof(meta.IsReadOnly), meta.IsReadOnly);
+    var schema = new Dictionary<string, object>
+    {
+      { "title", meta.GetDisplayName() },
+      { "description", meta.Description! },
+      { "format", meta.DataTypeName?.ToLowerCamelCase()! },
+      { "template", meta.TemplateHint?.ToLowerCamelCase()! },
+      { nameof(meta.ShowForDisplay), meta.ShowForDisplay },
+      { nameof(meta.ShowForEdit), meta.ShowForEdit },
+      { nameof(meta.IsReadOnly), meta.IsReadOnly }
+    };
     ModelPropertyCollection? metaProperties = null;
     if (meta.IsEnumerableType)
     {

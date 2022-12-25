@@ -9,7 +9,7 @@ public static class ModelBuilderExtensions
 {
   public static ModelBuilder ConfigComment(this ModelBuilder builder)
   {
-    foreach (var item in builder.Model.GetEntityTypes().Where(o => o.ClrType.IsAssignableTo(typeof(ITreeNode<>))).ToList())
+    foreach (var item in builder.Model.GetEntityTypes().Where(o => o.ClrType.IsAssignableTo(typeof(BaseEntity))).ToList())
     {
       builder.Entity(item.Name).ToTable(o => o.HasComment(item.ClrType.GetDisplayName()));
       foreach (var prop in item.GetProperties())
@@ -47,14 +47,14 @@ public static class ModelBuilderExtensions
 
   public static ModelBuilder ConfigTreeNode(this ModelBuilder builder)
   {
-    foreach (var item in builder.Model.GetEntityTypes().Where(o => o.ClrType.IsAssignableTo(typeof(ITreeNode<>))).ToList())
+    foreach (var item in builder.Model.GetEntityTypes().Where(o => o.ClrType.IsAssignableTo(typeof(TreeEntity<>))).ToList())
     {
-      builder.Entity(item.Name).HasOne(nameof(ITreeNode<BaseEntity>.Parent))
-          .WithMany(nameof(ITreeNode<BaseEntity>.Children))
-          .HasForeignKey(new string[] { nameof(ITreeNode<BaseEntity>.ParentId) }).OnDelete(DeleteBehavior.SetNull);
-      builder.Entity(item.Name).Property(nameof(ITreeNode<BaseEntity>.Name)).IsRequired();
-      builder.Entity(item.Name).Property(nameof(ITreeNode<BaseEntity>.Number)).IsRequired();
-      builder.Entity(item.Name).Property(nameof(ITreeNode<BaseEntity>.Path)).IsRequired();
+      builder.Entity(item.ClrType).HasOne(nameof(TreeEntity<BaseEntity>.Parent))
+          .WithMany(nameof(TreeEntity<BaseEntity>.Children))
+          .HasForeignKey(new string[] { nameof(TreeEntity<BaseEntity>.ParentId) }).OnDelete(DeleteBehavior.SetNull);
+      builder.Entity(item.ClrType).Property(nameof(TreeEntity<BaseEntity>.Name)).IsRequired();
+      builder.Entity(item.ClrType).Property(nameof(TreeEntity<BaseEntity>.Number)).IsRequired();
+      // builder.Entity(item.ClrType).Property(nameof(TreeEntity<BaseEntity>.Path)).IsRequired();
     }
     return builder;
   }

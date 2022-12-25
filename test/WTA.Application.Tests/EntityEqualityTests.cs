@@ -1,4 +1,4 @@
-using WTA.Application.Domain.Users;
+using WTA.Application.Domain.System;
 
 namespace WTA.Application.Tests
 {

@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using WTA.Application.Abstractions.Domain;
-using WTA.Application.Domain.Users;
+using WTA.Application.Domain.System;
 
 namespace WTA.Application.Domain.Blogs;
 
+[SystemModule]
+[Permission]
+[Display(Name = "帖子")]
 public class BlogPost : BaseEntity
 {
   public Guid UserId { get; set; }

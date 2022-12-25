@@ -38,12 +38,12 @@ public class EfRepository<T> : IRepository<T> where T : BaseEntity
     _efDbContext.RemoveRange(entities);
   }
 
-  public IQueryable<T> Tracking()
+  public IQueryable<T> Query()
   {
     return _efDbContext.Set<T>();
   }
 
-  public IQueryable<T> NoTracking()
+  public IQueryable<T> AsNoTracking()
   {
     return _efDbContext.Set<T>().AsNoTracking();
   }
