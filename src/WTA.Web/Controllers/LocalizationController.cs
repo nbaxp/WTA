@@ -6,9 +6,7 @@ using WTA.Application.Abstractions.Extensions;
 
 namespace WTA.Web.Controllers;
 
-[ApiExplorerSettings(GroupName = "Test")]
 [Route("[controller]/[action]")]
-[Route("{culture=zh}/[controller]/[action]")]
 [ApiController]
 public class LocalizationController : Controller
 {
@@ -52,6 +50,12 @@ public class LocalizationController : Controller
     var routes = this._linkParser.ParsePathByAddress("default", path)!;
     var url = $"{Url.RouteUrl("default", routes)}?{returnUrl.GetQuery()}";
     return Json(url);
+  }
+
+  [HttpGet]
+  public IActionResult Resources()
+  {
+    return Json(_localizer.GetAllStrings().ToDictionary(o => o.Name, o => o.Value));
   }
 
   [HttpGet]

@@ -10,9 +10,7 @@ using WTA.Application.Services.Users;
 
 namespace WTA.Web.Controllers;
 
-[ApiExplorerSettings(GroupName = "Test")]
 [Route("[controller]/[action]")]
-[Route("{culture=zh}/[controller]/[action]")]
 [ApiController]
 public class TokenController : Controller
 {

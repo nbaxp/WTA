@@ -114,14 +114,14 @@ public class DefaultDbSeed : IDbSeed
     ///super和admin无法删除，super和admin两种角色无法删除，super角色无法修改
     //await _db.Set<Permission>().AddAsync(new Permission { Number = "Authorize", Name = "授权权限" });
 
-    var resourceTypes = Assembly.GetAssembly(typeof(BaseEntity))!.GetTypes().Where(t => t.GetCustomAttributes().Any(a => a.GetType().IsAssignableTo(typeof(ResourceAttribute))));
+    var resourceTypes = Assembly.GetAssembly(typeof(BaseEntity))!.GetTypes().Where(t => t.GetCustomAttributes().Any(a => a.GetType().IsAssignableTo(typeof(GroupAttribute))));
 
     foreach (var item in resourceTypes)
     {
       // 初始化资源
       var resourceAttribute = item.GetCustomAttributes()
-        .FirstOrDefault(o => typeof(ResourceAttribute).IsAssignableFrom(o.GetType()))
-        as ResourceAttribute;
+        .FirstOrDefault(o => typeof(GroupAttribute).IsAssignableFrom(o.GetType()))
+        as GroupAttribute;
       var resourceNumber = $"{resourceAttribute!.Group}.{item.Name}";
       var resourceName = this._localizer[item.GetCustomAttribute<DisplayAttribute>()?.Name ?? item.FullName!];
       var permission = _db.Set<Permission>().FirstOrDefault(o => o.Number == resourceNumber);

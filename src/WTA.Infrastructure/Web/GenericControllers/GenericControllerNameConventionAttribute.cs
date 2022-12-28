@@ -13,10 +13,9 @@ public class GenericControllerNameConventionAttribute : Attribute, IControllerMo
     {
       return;
     }
-
     var entityType = controller.ControllerType.GenericTypeArguments[0];
     controller.ControllerName = entityType.Name;
-    var groupName = entityType.GetCustomAttribute<ResourceAttribute>()?.Group;
+    var groupName = entityType.GetCustomAttribute<GroupAttribute>()?.Area;
     if (!string.IsNullOrEmpty(groupName))
     {
       controller.ApiExplorer.GroupName = groupName;

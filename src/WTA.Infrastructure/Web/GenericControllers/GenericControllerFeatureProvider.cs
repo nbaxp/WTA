@@ -12,7 +12,7 @@ public class GenericControllerFeatureProvider : IApplicationFeatureProvider<Cont
     var typeInfos = Assembly
       .GetAssembly(typeof(BaseEntity))!.GetTypes()
       //.Where(o => !o.IsAbstract && o.IsAssignableTo(typeof(BaseEntity)))//根据实体类型
-      .Where(o => o.CustomAttributes.Any(o => o.AttributeType.IsAssignableTo(typeof(ResourceAttribute))))//根据注解获取
+      .Where(o => o.CustomAttributes.Any(o => o.AttributeType.IsAssignableTo(typeof(GroupAttribute))))//根据注解获取
       .Select(o => o.GetTypeInfo())
       .ToList();
     foreach (var entityTypeInfo in typeInfos)

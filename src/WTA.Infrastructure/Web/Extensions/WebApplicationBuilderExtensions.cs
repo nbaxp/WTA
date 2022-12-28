@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -107,6 +107,7 @@ public static class WebApplicationBuilderExtensions
     builder.Services.AddHttpClient();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
+
     builder.Services.AddEventBus();
     builder.Services.AddSingleton<ILinqInclude, DefaultLinqInclude>();
     builder.Services.AddSingleton<ILinqDynamic, DefaultLinqDynamic>();
@@ -173,6 +174,16 @@ public static class WebApplicationBuilderExtensions
       // 小写 + 连字符格式
       options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
     })
+    .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+      if (builder.Environment.IsDevelopment())
+      {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+        options.JsonSerializerOptions.WriteIndented = true;
+      }
+    })
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization(options =>
     {
@@ -201,8 +212,8 @@ public static class WebApplicationBuilderExtensions
       options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
       options.SupportedCultures = supportedCultures;
       options.SupportedUICultures = supportedCultures;
-      options.RequestCultureProviders.Clear();
-      options.RequestCultureProviders.Add(new RouteDataRequestCultureProvider());
+      //options.RequestCultureProviders.Clear();
+      //options.RequestCultureProviders.Add(new RouteDataRequestCultureProvider());
     });
   }
 

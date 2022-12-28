@@ -38,7 +38,7 @@ public static class WebApplicationExtensions
     var provider = new FileExtensionContentTypeProvider();
     provider.Mappings.Add(".apk", "application/vnd.android.package-archive");
     provider.Mappings.Add(".plist", "text/xml");
-    provider.Mappings.Add(".ipa", "application/vnd.android.package-archive");
+    provider.Mappings.Add(".ipa", "application/iphone");
     app.UseStaticFiles(new StaticFileOptions
     {
       ContentTypeProvider = provider,
@@ -50,7 +50,8 @@ public static class WebApplicationExtensions
   private static void UseRouting(WebApplication app)
   {
     app.UseRouting();
-    app.MapControllerRoute(name: "default", pattern: "{culture:slugify=zh}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+    app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+    app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
   }
 
   private static void UseLocalization(WebApplication app)

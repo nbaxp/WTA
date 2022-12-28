@@ -23,7 +23,6 @@ public class TestService : ITestService<User>
       .Where(@"UserName == ""super""")
       .OrderBy("UserName,Id desc")
       .ToList();
-    var permission = users.First().UserRoles.First().Role.RolePermissions.First().Permission.Name;
     return users;
   }
 }
