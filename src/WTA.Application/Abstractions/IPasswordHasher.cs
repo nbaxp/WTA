@@ -2,7 +2,7 @@ namespace WTA.Application.Abstractions;
 
 public interface IPasswordHasher
 {
-  string CreateSalt();
+    string CreateSalt();
 
-  string HashPassword(string password, string salt);
+    string HashPassword(string password, string salt);
 }

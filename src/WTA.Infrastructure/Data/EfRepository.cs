@@ -6,50 +6,50 @@ namespace WTA.Infrastructure.Data;
 
 public class EfRepository<T> : IRepository<T> where T : BaseEntity
 {
-  private readonly DbContext _efDbContext;
+    private readonly DbContext _efDbContext;
 
-  public EfRepository(DbContext efDbContext)
-  {
-    this._efDbContext = efDbContext;
-  }
+    public EfRepository(DbContext efDbContext)
+    {
+        this._efDbContext = efDbContext;
+    }
 
-  public ValueTask<T?> FindAsync(Guid id, CancellationToken cancellationToken = default)
-  {
-    return _efDbContext.Set<T>().FindAsync(id, cancellationToken);
-  }
+    public ValueTask<T?> FindAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return _efDbContext.Set<T>().FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
+    }
 
-  public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
-  {
-    await _efDbContext.Set<T>().AddAsync(entity, cancellationToken);
-  }
+    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
+    {
+        await _efDbContext.Set<T>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
+    }
 
-  public Task AddRangeAsync(T[] entities, CancellationToken cancellationToken = default)
-  {
-    return _efDbContext.AddRangeAsync(entities, cancellationToken);
-  }
+    public Task AddRangeAsync(T[] entities, CancellationToken cancellationToken = default)
+    {
+        return _efDbContext.AddRangeAsync(entities, cancellationToken);
+    }
 
-  public void Remove(T entity)
-  {
-    _efDbContext.Remove(entity);
-  }
+    public void Remove(T entity)
+    {
+        _efDbContext.Remove(entity);
+    }
 
-  public void RemoveAsync(T[] entities)
-  {
-    _efDbContext.RemoveRange(entities);
-  }
+    public void RemoveAsync(T[] entities)
+    {
+        _efDbContext.RemoveRange(entities);
+    }
 
-  public IQueryable<T> Query()
-  {
-    return _efDbContext.Set<T>();
-  }
+    public IQueryable<T> Query()
+    {
+        return _efDbContext.Set<T>();
+    }
 
-  public IQueryable<T> AsNoTracking()
-  {
-    return _efDbContext.Set<T>().AsNoTracking();
-  }
+    public IQueryable<T> AsNoTracking()
+    {
+        return _efDbContext.Set<T>().AsNoTracking();
+    }
 
-  public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-  {
-    return _efDbContext.SaveChangesAsync(cancellationToken);
-  }
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return _efDbContext.SaveChangesAsync(cancellationToken);
+    }
 }

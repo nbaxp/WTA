@@ -5,9 +5,9 @@ namespace WTA.Web.Areas.Admin;
 [Area("Admin")]
 public class HomeController : Controller
 {
-  [HttpGet]
-  public IActionResult Test()
-  {
-    return Content("admin area");
-  }
+    [HttpGet]
+    public IActionResult Test()
+    {
+        return Content("admin area");
+    }
 }

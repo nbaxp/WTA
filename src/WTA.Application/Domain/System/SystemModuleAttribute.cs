@@ -4,7 +4,7 @@ namespace WTA.Application.Domain.System;
 
 public class SystemModuleAttribute : GroupAttribute
 {
-  public SystemModuleAttribute() : base("SystemManagement", "SystemManagement")
-  {
-  }
+    public SystemModuleAttribute() : base("SystemManagement", "SystemManagement")
+    {
+    }
 }

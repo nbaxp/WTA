@@ -8,25 +8,25 @@ namespace WTA.Infrastructure.Web.Swagger;
 
 public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>
 {
-  private readonly IApiDescriptionGroupCollectionProvider provider;
+    private readonly IApiDescriptionGroupCollectionProvider provider;
 
-  public SwaggerConfigureOptions(IApiDescriptionGroupCollectionProvider provider)
-  {
-    this.provider = provider;
-  }
-
-  public void Configure(SwaggerGenOptions options)
-  {
-    foreach (var description in provider.ApiDescriptionGroups.Items)
+    public SwaggerConfigureOptions(IApiDescriptionGroupCollectionProvider provider)
     {
-      if (description.GroupName is not null)
-      {
-        options.SwaggerDoc(description.GroupName, new OpenApiInfo { Title = description.GroupName });
-      }
-      else
-      {
-        options.SwaggerDoc("default", new OpenApiInfo { Title = "Default" });
-      }
+        this.provider = provider;
     }
-  }
+
+    public void Configure(SwaggerGenOptions options)
+    {
+        foreach (var description in provider.ApiDescriptionGroups.Items)
+        {
+            if (description.GroupName is not null)
+            {
+                options.SwaggerDoc(description.GroupName, new OpenApiInfo { Title = description.GroupName });
+            }
+            else
+            {
+                options.SwaggerDoc("default", new OpenApiInfo { Title = "Default" });
+            }
+        }
+    }
 }

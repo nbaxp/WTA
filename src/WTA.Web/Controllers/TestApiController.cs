@@ -8,14 +8,14 @@ namespace WTA.Web.Controllers;
 //[ApiController]
 public class TestApiController : Controller
 {
-  [HttpGet]
-  public IActionResult Index(TestModel model)
-  {
-    return Json(new
+    [HttpGet]
+    public IActionResult Index(TestModel model)
     {
-      Model = model,
-      Errors = ViewData.ModelState.ToErrors(),
-      Schema = ViewData.ModelMetadata.GetSchema(this.HttpContext.RequestServices)
-    });
-  }
+        return Json(new
+        {
+            Model = model,
+            Errors = ViewData.ModelState.ToErrors(),
+            Schema = ViewData.ModelMetadata.GetSchema(this.HttpContext.RequestServices)
+        });
+    }
 }

@@ -4,10 +4,10 @@ namespace WTA.Application.Abstractions.Domain;
 
 public abstract class BaseEntity
 {
-  public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-  public BaseEntity()
-  {
-    Id = AppContext.Current.NewGuid();
-  }
+    public BaseEntity()
+    {
+        Id = AppContext.Current.NewGuid();
+    }
 }

@@ -4,9 +4,9 @@ namespace WTA.Application.Services.Users;
 
 public interface IUserService
 {
-  ValidateUserResult ValidateUser(LoginModel model);
+    ValidateUserResult ValidateUser(LoginModel model);
 
-  User? GetUser(string userName);
+    User? GetUser(string userName);
 
-  List<Role> GetRoles(string userName);
+    List<Role> GetRoles(string userName);
 }

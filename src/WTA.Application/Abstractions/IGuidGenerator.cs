@@ -2,5 +2,5 @@ namespace WTA.Application.Abstractions;
 
 public interface IGuidGenerator
 {
-  Guid Create();
+    Guid Create();
 }

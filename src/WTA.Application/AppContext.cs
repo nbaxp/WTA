@@ -5,12 +5,12 @@ namespace WTA.Application;
 /// </summary>
 public class AppContext
 {
-  public IServiceProvider? Services { get; private set; }
+    public IServiceProvider? Services { get; private set; }
 
-  public static void Configure(IServiceProvider serviceProvider)
-  {
-    Current.Services = serviceProvider;
-  }
+    public static void Configure(IServiceProvider serviceProvider)
+    {
+        Current.Services = serviceProvider;
+    }
 
-  public static AppContext Current = new AppContext();
+    public static AppContext Current = new AppContext();
 }

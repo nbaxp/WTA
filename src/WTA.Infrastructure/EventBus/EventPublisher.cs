@@ -6,28 +6,28 @@ namespace WTA.Infrastructure.EventBus;
 
 public class EventPublisher : IEventPublisher
 {
-  private readonly IServiceProvider _applicationServices;
+    private readonly IServiceProvider _applicationServices;
 
-  public EventPublisher(IServiceProvider applicationServices)
-  {
-    this._applicationServices = applicationServices;
-  }
-
-  public async Task Publish<T>(T data)
-  {
-    using var scope = _applicationServices.CreateScope();
-    var subscribers = scope.ServiceProvider.GetServices<IEventHander<T>>().ToList();
-    foreach (var item in subscribers)
+    public EventPublisher(IServiceProvider applicationServices)
     {
-      try
-      {
-        await item.Handle(data);
-      }
-      catch (Exception ex)
-      {
-        ex.PrintStack();
-        throw;
-      }
+        this._applicationServices = applicationServices;
     }
-  }
+
+    public async Task Publish<T>(T data)
+    {
+        using var scope = _applicationServices.CreateScope();
+        var subscribers = scope.ServiceProvider.GetServices<IEventHander<T>>().ToList();
+        foreach (var item in subscribers)
+        {
+            try
+            {
+                await item.Handle(data).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                ex.PrintStack();
+                throw;
+            }
+        }
+    }
 }

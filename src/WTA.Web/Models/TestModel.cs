@@ -5,7 +5,7 @@ namespace WTA.Web.Models;
 [Display]
 public class TestModel
 {
-  [Display]
-  [Required]
-  public string? UserName { get; set; }
+    [Display]
+    [Required]
+    public string? UserName { get; set; }
 }

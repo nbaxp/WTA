@@ -11,89 +11,89 @@ namespace WTA.Infrastructure.Web.Extensions;
 
 public static class WebApplicationExtensions
 {
-  public static void Configure(this WebApplication app)
-  {
-    Application.AppContext.Configure(app.Services);
-    if (app.Environment.IsDevelopment())
+    public static void Configure(this WebApplication app)
     {
-      app.UseExceptionHandler("/Error");
-    }
-    UseStaticFiles(app);
-    UseRouting(app);
-    UseLocalization(app);
-    UseSwagger(app);
-    UseAuthorization(app);
-    UseDatabase(app);
-  }
-
-  private static void UseStaticFiles(WebApplication app)
-  {
-    // 设置首页为 index.html
-    var options = new DefaultFilesOptions();
-    options.DefaultFileNames.Clear();
-    options.DefaultFileNames.Add("index.html");
-    app.UseDefaultFiles(options);
-
-    // app 下载配置
-    var provider = new FileExtensionContentTypeProvider();
-    provider.Mappings.Add(".apk", "application/vnd.android.package-archive");
-    provider.Mappings.Add(".plist", "text/xml");
-    provider.Mappings.Add(".ipa", "application/iphone");
-    app.UseStaticFiles(new StaticFileOptions
-    {
-      ContentTypeProvider = provider,
-      ServeUnknownFileTypes = true,
-      DefaultContentType = "application/octet-stream"
-    });
-  }
-
-  private static void UseRouting(WebApplication app)
-  {
-    app.UseRouting();
-    app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-    app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-  }
-
-  private static void UseLocalization(WebApplication app)
-  {
-    var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
-    app.UseRequestLocalization(localizationOptions);
-  }
-
-  private static void UseSwagger(WebApplication app)
-  {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-      var apiDescriptionGroups = app.Services.GetRequiredService<IApiDescriptionGroupCollectionProvider>().ApiDescriptionGroups.Items;
-      foreach (var description in apiDescriptionGroups)
-      {
-        if (description.GroupName is not null)
+        Application.AppContext.Configure(app.Services);
+        if (app.Environment.IsDevelopment())
         {
-          options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName);
+            app.UseExceptionHandler("/Error");
         }
-        else
-        {
-          options.SwaggerEndpoint($"/swagger/default/swagger.json", "Default");
-        }
-      }
-    });
-  }
-
-  private static void UseAuthorization(WebApplication app)
-  {
-    app.UseCors();
-    app.UseAuthentication();
-    app.UseAuthorization();
-  }
-
-  private static void UseDatabase(WebApplication app)
-  {
-    using var scope = app.Services.CreateScope();
-    using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
-    if (db.Database.EnsureCreated())
-    {
-      scope.ServiceProvider.GetRequiredService<IDbSeed>().Seed().Wait();
+        UseStaticFiles(app);
+        UseRouting(app);
+        UseLocalization(app);
+        UseSwagger(app);
+        UseAuthorization(app);
+        UseDatabase(app);
     }
-  }
+
+    private static void UseStaticFiles(WebApplication app)
+    {
+        // 设置首页为 index.html
+        var options = new DefaultFilesOptions();
+        options.DefaultFileNames.Clear();
+        options.DefaultFileNames.Add("index.html");
+        app.UseDefaultFiles(options);
+
+        // app 下载配置
+        var provider = new FileExtensionContentTypeProvider();
+        provider.Mappings.Add(".apk", "application/vnd.android.package-archive");
+        provider.Mappings.Add(".plist", "text/xml");
+        provider.Mappings.Add(".ipa", "application/iphone");
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            ContentTypeProvider = provider,
+            ServeUnknownFileTypes = true,
+            DefaultContentType = "application/octet-stream"
+        });
+    }
+
+    private static void UseRouting(WebApplication app)
+    {
+        app.UseRouting();
+        app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+        app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+    }
+
+    private static void UseLocalization(WebApplication app)
+    {
+        var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
+        app.UseRequestLocalization(localizationOptions);
+    }
+
+    private static void UseSwagger(WebApplication app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            var apiDescriptionGroups = app.Services.GetRequiredService<IApiDescriptionGroupCollectionProvider>().ApiDescriptionGroups.Items;
+            foreach (var description in apiDescriptionGroups)
+            {
+                if (description.GroupName is not null)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName);
+                }
+                else
+                {
+                    options.SwaggerEndpoint($"/swagger/default/swagger.json", "Default");
+                }
+            }
+        });
+    }
+
+    private static void UseAuthorization(WebApplication app)
+    {
+        app.UseCors();
+        app.UseAuthentication();
+        app.UseAuthorization();
+    }
+
+    private static void UseDatabase(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
+        if (db.Database.EnsureCreated())
+        {
+            scope.ServiceProvider.GetRequiredService<IDbSeed>().Seed().Wait();
+        }
+    }
 }
