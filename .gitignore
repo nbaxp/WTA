@@ -17,3 +17,7 @@ x86/
 [Tt]est[Rr]esult*/
 node_modules/
 publish/
+
+*.db
+*.db-shm
+*.db-wal
