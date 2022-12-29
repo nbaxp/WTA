@@ -10,4 +10,7 @@ echo "$FILES" | cat | xargs | sed -e 's/ /,/g' | xargs dotnet format --include
 # Add back the modified files to staging
 echo "$FILES" | xargs git add
 
+set -eo pipefail
+dotnet build
+
 exit 0

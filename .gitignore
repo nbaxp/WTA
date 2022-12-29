@@ -18,6 +18,7 @@ x86/
 node_modules/
 publish/
 
+*.bak
 *.db
 *.db-shm
 *.db-wal

@@ -1,4 +1,4 @@
-﻿namespace WTA.Application.Abstractions.Domain;
+namespace WTA.Application.Abstractions.Domain;
 
 public interface IAssociation
 {

@@ -1,4 +1,4 @@
-﻿using WTA.Application.Abstractions.Domain;
+using WTA.Application.Abstractions.Domain;
 
 namespace WTA.Application.Abstractions
 {
