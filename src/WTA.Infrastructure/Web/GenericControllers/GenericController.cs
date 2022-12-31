@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Abstractions.Extensions;
 using WTA.Infrastructure.Web.Extensions;
@@ -24,7 +22,6 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] PaginationViewModel<TEntity> model)
     {
-        _ = HttpContext.RequestServices.GetRequiredService<ModelMetadataProvider>().GetMetadataForType(typeof(TEntity));
         try
         {
             if (ModelState.IsValid)
@@ -43,7 +40,7 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
                 return Json(new
                 {
                     model,
-                    schema = ViewData.ModelMetadata.GetSchema(HttpContext.RequestServices, true)
+                    schema = model.GetType().GetMetadataForType(this.HttpContext.RequestServices, true)
                 });
             }
             return BadRequest();

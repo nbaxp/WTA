@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,7 @@ using WTA.Infrastructure.Resources;
 using WTA.Infrastructure.Services;
 using WTA.Infrastructure.Uri;
 using WTA.Infrastructure.Web.Authentication;
+using WTA.Infrastructure.Web.DataAnnotations;
 using WTA.Infrastructure.Web.GenericControllers;
 using WTA.Infrastructure.Web.ModelBinding;
 using WTA.Infrastructure.Web.Routing;
@@ -199,6 +201,7 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddLocalization(WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<IValidationAttributeAdapterProvider, LocalizedValidationAttributeAdapterProvider>();
         builder.Services.AddSingleton<IStringLocalizer>(o => o.GetRequiredService<IStringLocalizer<Resource>>());
         builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.Configure<RequestLocalizationOptions>(options =>

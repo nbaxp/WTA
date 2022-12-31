@@ -12,6 +12,12 @@ namespace WTA.Infrastructure.Web.Extensions;
 
 public static class ModelMetadataExtensions
 {
+    public static object? GetMetadataForType(this Type modelType, IServiceProvider serviceProvider, bool showForList = false)
+    {
+        var meta = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IModelMetadataProvider>().GetMetadataForType(modelType);
+        return meta.GetSchema(serviceProvider, showForList);
+    }
+
     public static object? GetSchema(this ModelMetadata meta, IServiceProvider serviceProvider, bool showForList = false)
     {
         var modelType = meta.UnderlyingOrModelType;
@@ -85,8 +91,7 @@ public static class ModelMetadataExtensions
         {
             if (item is ValidationAttribute attribute)
             {
-                _ = attribute.ErrorMessage;
-                string? message;
+                var message = attribute.ErrorMessage;
                 if (attribute is RemoteAttribute)
                 {
                     message = localizer![attribute.ErrorMessage!, pm.GetDisplayName()];
@@ -140,8 +145,8 @@ public static class ModelMetadataExtensions
                 else if (attribute is RangeAttribute range)
                 {
                     rule.Add("type", "number");
-                    rule.Add("min", range.Minimum is int minInt ? minInt : (double)range.Minimum);
-                    rule.Add("max", range.Maximum is int maxInt ? maxInt : (double)range.Maximum);
+                    rule.Add("min", range.Minimum is int ? (int)range.Minimum : (double)range.Minimum);
+                    rule.Add("max", range.Maximum is int ? (int)range.Maximum : (double)range.Maximum);
                 }
                 else if (attribute is EmailAddressAttribute)
                 {

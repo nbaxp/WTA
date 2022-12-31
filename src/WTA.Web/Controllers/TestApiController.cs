@@ -4,18 +4,22 @@ using WTA.Web.Models;
 
 namespace WTA.Web.Controllers;
 
-//[Route("api/[controller]/[action]")]
-//[ApiController]
+[Route("[controller]/[action]")]
+[ApiController]
 public class TestApiController : Controller
 {
     [HttpGet]
-    public IActionResult Index(TestModel model)
+    public IActionResult Index([FromQuery] TestModel model)
     {
+        if (ModelState.IsValid)
+        {
+
+        }
         return Json(new
         {
             Model = model,
             Errors = ViewData.ModelState.ToErrors(),
-            Schema = ViewData.ModelMetadata.GetSchema(this.HttpContext.RequestServices)
+            Schema = model.GetType().GetMetadataForType(this.HttpContext.RequestServices)
         });
     }
 }
