@@ -19,7 +19,10 @@ public class GenericControllerFeatureProvider : IApplicationFeatureProvider<Cont
         {
             var entityType = entityTypeInfo.AsType();
             var typeName = entityType.Name + "Controller";
-            if (!feature.Controllers.Any(o => o.Name == typeName && o.IsAssignableTo(typeof(GenericController<,,>))))
+            if (!feature.Controllers.Any(o => o.Name == typeName &&
+                o.BaseType != null &&
+                o.BaseType.IsGenericType &&
+                o.BaseType.GetGenericTypeDefinition() == typeof(GenericController<,,>)))
             {
                 feature.Controllers.Add(typeof(GenericController<,,>).MakeGenericType(entityType, entityType, entityType).GetTypeInfo());
             }

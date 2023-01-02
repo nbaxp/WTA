@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using WTA.Application;
 using WTA.Application.Abstractions.Data;
 
 namespace WTA.Infrastructure.Web.Extensions;
@@ -13,7 +14,7 @@ public static class WebApplicationExtensions
 {
     public static void Configure(this WebApplication app)
     {
-        Application.AppContext.Configure(app.Services);
+        ApplicationContext.Configure(app.Services);
         if (app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
@@ -49,9 +50,11 @@ public static class WebApplicationExtensions
 
     private static void UseRouting(WebApplication app)
     {
+        var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+        var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
         app.UseRouting();
-        app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-        app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+        app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
+        app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
     }
 
     private static void UseLocalization(WebApplication app)
@@ -82,7 +85,7 @@ public static class WebApplicationExtensions
 
     private static void UseAuthorization(WebApplication app)
     {
-        app.UseCors();
+        app.UseCors("Default");
         app.UseAuthentication();
         app.UseAuthorization();
     }

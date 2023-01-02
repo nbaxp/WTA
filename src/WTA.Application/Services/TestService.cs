@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Domain.System;
 

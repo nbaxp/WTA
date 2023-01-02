@@ -20,7 +20,7 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] PaginationViewModel<TEntity> model)
+    public virtual async Task<IActionResult> Index([FromQuery] PaginationViewModel<TEntity> model)
     {
         try
         {

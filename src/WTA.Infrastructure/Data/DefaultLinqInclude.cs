@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using WTA.Application.Abstractions.Data;
+using WTA.Application.Abstractions.Include;
 
 namespace WTA.Infrastructure.Data;
 

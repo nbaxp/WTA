@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Linq.Expressions;
-using WTA.Application.Abstractions.Data;
+using WTA.Application.Abstractions.Include;
 
 namespace WTA.Infrastructure.Data;
 

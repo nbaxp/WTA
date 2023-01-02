@@ -9,16 +9,22 @@ public class GenericControllerNameConventionAttribute : Attribute, IControllerMo
 {
     public void Apply(ControllerModel controller)
     {
-        if (controller.ControllerType.GetGenericTypeDefinition() != typeof(GenericController<,,>))
+        if (controller.ControllerType.IsGenericType || controller.ControllerType.BaseType.IsGenericType)
         {
-            return;
-        }
-        var entityType = controller.ControllerType.GenericTypeArguments[0];
-        controller.ControllerName = entityType.Name;
-        var groupName = entityType.GetCustomAttribute<GroupAttribute>()?.Area;
-        if (!string.IsNullOrEmpty(groupName))
-        {
-            controller.ApiExplorer.GroupName = groupName;
+            var controllerType = controller.ControllerType.IsGenericType ? controller.ControllerType : controller.ControllerType.BaseType;
+            if (controllerType.GetGenericTypeDefinition() == typeof(GenericController<,,>))
+            {
+                var entityType = controllerType.GenericTypeArguments[0];
+                if (controller.ControllerName != entityType.Name)
+                {
+                    controller.ControllerName = entityType.Name;
+                }
+                var groupName = entityType.GetCustomAttribute<GroupAttribute>()?.Area;
+                if (!string.IsNullOrEmpty(groupName))
+                {
+                    controller.ApiExplorer.GroupName = groupName;
+                }
+            }
         }
     }
 }

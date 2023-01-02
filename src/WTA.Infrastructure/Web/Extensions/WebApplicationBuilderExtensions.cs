@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +24,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WTA.Application.Abstractions;
 using WTA.Application.Abstractions.Data;
+using WTA.Application.Abstractions.Include;
 using WTA.Application.Abstractions.Url;
 using WTA.Application.Authentication;
 using WTA.Application.Domain.System;
@@ -40,7 +40,6 @@ using WTA.Infrastructure.Uri;
 using WTA.Infrastructure.Web.Authentication;
 using WTA.Infrastructure.Web.DataAnnotations;
 using WTA.Infrastructure.Web.GenericControllers;
-using WTA.Infrastructure.Web.ModelBinding;
 using WTA.Infrastructure.Web.Routing;
 using WTA.Infrastructure.Web.Swagger;
 
@@ -101,6 +100,7 @@ public static class WebApplicationBuilderExtensions
         AddSwagger(builder);
         AddAuthentication(builder);
         AddCache(builder);
+        AddCors(builder);
         AddDbContext(builder);
     }
 
@@ -171,10 +171,10 @@ public static class WebApplicationBuilderExtensions
         // MVC
         builder.Services.AddMvc(options =>
         {
-            options.Conventions.Add(new GenericControllerRouteConvention());
-            options.ModelMetadataDetailsProviders.Insert(0, new CustomDisplayMetadataProvider());
-            // 小写 + 连字符格式
+            options.ModelMetadataDetailsProviders.Insert(0, new DefaultDisplayMetadataProvider());
             options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+            options.Conventions.Add(new GenericControllerRouteConvention());
+            //options.ModelBindingMessageProvider
         })
         .AddJsonOptions(options =>
         {
@@ -190,10 +190,23 @@ public static class WebApplicationBuilderExtensions
         .AddDataAnnotationsLocalization(options =>
         {
             options.DataAnnotationLocalizerProvider = (type, factory) =>
+            {
+                var localizer = factory.Create(typeof(Resource));
+                return localizer;
+            };
+        })
+        .ConfigureApiBehaviorOptions(options =>
         {
-            var localizer = factory.Create(typeof(Resource));
-            return localizer;
-        };
+            options.SuppressModelStateInvalidFilter = true;
+            //options.InvalidModelStateResponseFactory = context =>
+            //{
+            //    context.ActionDescriptor.Parameters[0].ParameterType.GetMetadataForType(context.HttpContext.RequestServices);
+            //    if (!context.ModelState.IsValid)
+            //    {
+            //        var errors = context.ModelState.ToErrors();
+            //    }
+            //    return new BadRequestObjectResult(context.ModelState);
+            //};
         })
         .ConfigureApplicationPartManager(o => o.FeatureProviders.Add(new GenericControllerFeatureProvider()))
         .AddControllersAsServices();// must after ConfigureApplicationPartManager
@@ -201,22 +214,19 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddLocalization(WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IValidationAttributeAdapterProvider, LocalizedValidationAttributeAdapterProvider>();
         builder.Services.AddSingleton<IStringLocalizer>(o => o.GetRequiredService<IStringLocalizer<Resource>>());
         builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
             var supportedCultures = new List<CultureInfo>
-          {
-        new CultureInfo("zh"),
-        new CultureInfo("en")
-          };
+            {
+                new CultureInfo("zh"),
+                new CultureInfo("en")
+            };
 
             options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
             options.SupportedCultures = supportedCultures;
             options.SupportedUICultures = supportedCultures;
-            //options.RequestCultureProviders.Clear();
-            //options.RequestCultureProviders.Add(new RouteDataRequestCultureProvider());
         });
     }
 
@@ -260,6 +270,20 @@ public static class WebApplicationBuilderExtensions
         {
             builder.Services.AddDistributedMemoryCache();
         }
+    }
+
+    private static void AddCors(WebApplicationBuilder builder)
+    {
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("Default", builder =>
+            {
+                builder.SetIsOriginAllowed(isOriginAllowed => true)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+            });
+        });
     }
 
     private static void AddDbContext(WebApplicationBuilder builder)

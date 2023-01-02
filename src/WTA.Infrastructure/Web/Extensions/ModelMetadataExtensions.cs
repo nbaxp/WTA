@@ -14,7 +14,8 @@ public static class ModelMetadataExtensions
 {
     public static object? GetMetadataForType(this Type modelType, IServiceProvider serviceProvider, bool showForList = false)
     {
-        var meta = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IModelMetadataProvider>().GetMetadataForType(modelType);
+        using var scope = serviceProvider.CreateScope();
+        var meta = scope.ServiceProvider.GetRequiredService<IModelMetadataProvider>().GetMetadataForType(modelType);
         return meta.GetSchema(serviceProvider, showForList);
     }
 
@@ -89,7 +90,7 @@ public static class ModelMetadataExtensions
         var modelValidationContextBase = new ModelValidationContextBase(actionContext, meta, new EmptyModelMetadataProvider());
         foreach (var item in pm.Attributes.Attributes)
         {
-            if (item is ValidationAttribute attribute)
+            if (item is ValidationAttribute attribute && !string.IsNullOrEmpty(attribute.ErrorMessage))
             {
                 var message = attribute.ErrorMessage;
                 if (attribute is RemoteAttribute)

@@ -4,9 +4,9 @@ namespace WTA.Application.Abstractions.Extensions;
 
 public static class AppContextExtensions
 {
-    public static Guid NewGuid(this AppContext appContext)
+    public static Guid NewGuid(this ApplicationContext appContext)
     {
-        using var scope = AppContext.Current.Services!.CreateScope();
+        using var scope = ApplicationContext.Current.Services!.CreateScope();
         return scope.ServiceProvider.GetRequiredService<IGuidGenerator>().Create();
     }
 }

@@ -15,7 +15,6 @@
     <PackageReference Include="linq2db.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
@@ -39,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Web\ModelBinding\" />
   </ItemGroup>
 
   <ItemGroup>

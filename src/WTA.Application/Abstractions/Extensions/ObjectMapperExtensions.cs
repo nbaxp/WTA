@@ -6,7 +6,7 @@ public static class ObjectMapperExtensions
 {
     public static T To<T>(this object from)
     {
-        using var scope = AppContext.Current.Services!.CreateScope();
+        using var scope = ApplicationContext.Current.Services!.CreateScope();
         return scope.ServiceProvider.GetRequiredService<IMapper>().To<T>(from);
     }
 
