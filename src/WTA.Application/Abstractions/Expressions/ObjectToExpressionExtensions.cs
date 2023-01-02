@@ -21,14 +21,6 @@ public static class ObjectToExpressionExtensions
         return null;
     }
 
-    private static Expression<Func<TEntity, bool>> GetExpression<TEntity, TModel>(TModel model, string propertyName, string propertyValue)
-    {
-        var parameter = Expression.Parameter(typeof(TEntity), "o");
-        var member = Expression.PropertyOrField(parameter, propertyName);
-        var constant = Expression.Constant(propertyValue);
-        return Expression.Lambda<Func<TEntity, bool>>(Expression.Equal(member, constant), parameter);
-    }
-
     public static string ToPredicate<TEntity, TModel>(this TModel model)
     {
         var predicate = string.Empty;

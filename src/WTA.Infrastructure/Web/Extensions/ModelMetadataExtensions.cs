@@ -92,7 +92,8 @@ public static class ModelMetadataExtensions
         {
             if (item is ValidationAttribute attribute && !string.IsNullOrEmpty(attribute.ErrorMessage))
             {
-                var message = attribute.ErrorMessage;
+                _ = attribute.ErrorMessage;
+                string? message;
                 if (attribute is RemoteAttribute)
                 {
                     message = localizer![attribute.ErrorMessage!, pm.GetDisplayName()];
