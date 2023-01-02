@@ -12,8 +12,10 @@ echo "$FILES" | xargs git add
 
 set -eo pipefail
 
+# dotnet build
 dotnet build
 
+# lint staged
 cd src/WTA.Web.UI && npx --no-install lint-staged
 
 exit 0
