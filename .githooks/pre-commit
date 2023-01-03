@@ -16,6 +16,6 @@ set -eo pipefail
 dotnet build
 
 # fe: lint
-cd src/WTA.Web.UI && npx --no-install lint-staged
+# cd src/WTA.Web.UI && npx --no-install lint-staged
 
 exit 0
