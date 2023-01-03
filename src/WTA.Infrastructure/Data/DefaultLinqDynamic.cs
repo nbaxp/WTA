@@ -24,18 +24,27 @@ public class DefaultLinqDynamic : Application.Abstractions.Data.ILinqDynamic
         foreach (var property in properties)
         {
             var propertyName = property.Name;
-            if (typeof(TEntity).GetProperty(propertyName) == null)
-            {
-                continue;
-            }
             var propertyValue = property.GetValue(model, null);
             if (propertyValue != null)
             {
                 var attributes = property.GetCustomAttributes<OperatorTypeAttribute>();
-                foreach (var attribute in attributes)
+                var whereAttributes = attributes.Where(o => o.OperatorType != OperatorType.OrderBy).ToList();
+                foreach (var attribute in whereAttributes)
                 {
+                    if (typeof(TEntity).GetProperty(propertyName) == null)
+                    {
+                        continue;
+                    }
                     var expression = attribute.OperatorType.GetAttributeOfType<ExpressionAttribute>().Expression;
-                    source = source.Where(string.Format(CultureInfo.InvariantCulture, expression, propertyName), propertyValue);
+                    if (attribute.OperatorType != OperatorType.OrderBy)
+                    {
+                        source = source.Where(string.Format(CultureInfo.InvariantCulture, expression, propertyName), propertyValue);
+                    }
+                }
+                var orderByAttributes = attributes.Where(o => o.OperatorType == OperatorType.OrderBy).ToList();
+                foreach (var attribute in orderByAttributes.OrderBy(o => o.OperatorType))
+                {
+                    source = source.OrderBy($"{propertyValue}");
                 }
             }
         }
