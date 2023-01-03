@@ -1,11 +1,4 @@
-@echo off
 git status --porcelain |findstr . && goto giterror
-
-if output=$(git status --porcelain) && [ -z "$output" ]; then
-  echo "Working directory clean"
-else 
-  echo "Uncommitted changes"
-fi
 
 cd src/WTA.Web.UI/ &&^
 npm install &&^
@@ -17,5 +10,4 @@ dotnet publish -c Release -o ../../publish -r win-x64 --self-contained true -p:P
 cd ../../
 
 :giterror
-@echo on
-git status
+git status -s
