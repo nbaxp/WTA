@@ -6,7 +6,7 @@ npm run build &&^
 cd ../../ &&^
 dotnet restore &&^
 cd src/WTA.Web/ &&^
-dotnet publish -c Release -o ../../publish -r win-x64 --self-contained true -p:PublishSingleFile=true &&^
+dotnet publish -c Release -r win-x64 -o ../../publish/win-x64 --self-contained true -p:PublishSingleFile=true &&^
 cd ../../
 
 :giterror
