@@ -38,7 +38,10 @@ public class TestApiController : Controller
         if (ModelState.IsValid)
         {
         }
-        var list = this._userRepository.AsNoTracking().Where(model).ToList();
+        var list = this._userRepository.AsNoTracking()
+            //.Where(model)
+            .Where("UserName.Contains(@0) and (UserName.StartsWith(@1) or UserName.EndsWith(@2))", "mi", "ad", "in")
+            .ToList();
         return Json(new
         {
             Test = list,
