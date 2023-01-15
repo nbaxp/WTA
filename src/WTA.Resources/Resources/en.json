@@ -1,0 +1,18 @@
+{
+  "test": "Test",
+  "compareAttribute": "'{0}' and '{1}' do not match.",
+  "fileExtensionsAttribute": "The {0} field only accepts files with the following extensions: {1}",
+  "maxLengthAttribute": "The field {0} must be a string or array type with a maximum length of '{1}'.",
+  "minLengthAttribute": "The field {0} must be a string or array type with a minimum length of '{1}'.",
+  "rangeAttribute": "The field {0} must be between {1} and {2}.",
+  "regularExpressionAttribute": "The field {0} must match the regular expression '{1}'.",
+  "requiredAttribute": "The {0} field is required.",
+  "stringLengthAttribute": "The field {0} must be a string with a maximum length of {1}.",
+  "stringLengthAttributeIncludingMinimum": "The field {0} must be a string with a minimum length of {2} and a maximum length of {1}.",
+  "customValidationAttribute": "{0} is not valid.",
+  "validationAttribute": "The field {0} is invalid.",
+  "name": "Gang Wang’s Blog",
+  "copyright": "©2020-{0} Copyright",
+  "userName": "user name",
+  "option1": "option one"
+}

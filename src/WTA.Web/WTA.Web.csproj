@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\en.po" />
-    <None Remove="Resources\zh.po" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\en.po" />
-    <EmbeddedResource Include="Resources\zh.po" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\WTA.Application\WTA.Application.csproj" />
     <ProjectReference Include="..\WTA.Infrastructure\WTA.Infrastructure.csproj" />
   </ItemGroup>

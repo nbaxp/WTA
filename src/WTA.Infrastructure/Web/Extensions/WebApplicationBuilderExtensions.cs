@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
@@ -34,14 +35,15 @@ using WTA.Application.Services.Users;
 using WTA.Infrastructure.Data;
 using WTA.Infrastructure.EventBus;
 using WTA.Infrastructure.Mapper;
-using WTA.Infrastructure.Resources;
 using WTA.Infrastructure.Services;
 using WTA.Infrastructure.Uri;
 using WTA.Infrastructure.Web.Authentication;
 using WTA.Infrastructure.Web.DataAnnotations;
 using WTA.Infrastructure.Web.GenericControllers;
+using WTA.Infrastructure.Web.Localization;
 using WTA.Infrastructure.Web.Routing;
 using WTA.Infrastructure.Web.Swagger;
+using WTA.Resources;
 
 namespace WTA.Infrastructure.Web.Extensions;
 
@@ -214,8 +216,9 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddLocalization(WebApplicationBuilder builder)
     {
+        builder.Services.AddLocalization();
+        builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
         builder.Services.AddSingleton<IStringLocalizer>(o => o.GetRequiredService<IStringLocalizer<Resource>>());
-        builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
             var supportedCultures = new List<CultureInfo>
@@ -227,6 +230,7 @@ public static class WebApplicationBuilderExtensions
             options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
             options.SupportedCultures = supportedCultures;
             options.SupportedUICultures = supportedCultures;
+            options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider());
         });
     }
 

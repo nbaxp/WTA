@@ -7,6 +7,7 @@ using WTA.Application.Abstractions.Extensions;
 namespace WTA.Web.Controllers;
 
 [Route("[controller]/[action]")]
+[Route("{culture}/[controller]/[action]")]
 [ApiController]
 public class LocalizationController : Controller
 {

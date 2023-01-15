@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using WTA.Application.Abstractions;
 
-namespace WTA.Infrastructure;
+namespace WTA.Infrastructure.Services;
 
 public class PasswordHasher : IPasswordHasher
 {
