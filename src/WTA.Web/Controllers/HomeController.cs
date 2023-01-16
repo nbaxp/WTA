@@ -9,11 +9,13 @@ namespace WTA.Web.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly ILogger<HomeController> _logger;
     private readonly IEventPublisher _eventPublisher;
     private readonly ITestService<User> _testService;
 
-    public HomeController(IEventPublisher eventPublisher, ITestService<User> testService)
+    public HomeController(ILogger<HomeController> logger, IEventPublisher eventPublisher, ITestService<User> testService)
     {
+        this._logger = logger;
         this._eventPublisher = eventPublisher;
         this._testService = testService;
     }
@@ -23,6 +25,13 @@ public class HomeController : Controller
         _ = this._testService.Test();
         await _eventPublisher.Publish(new TestEvent(new User(), "test")).ConfigureAwait(false);
         return Content("Test Web Controller");
+    }
+
+    public IActionResult TestSkyWalking()
+    {
+        var message = $"test sky walking:{DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}";
+        this._logger.LogInformation(message);
+        return Content(message);
     }
 
     [Authorize]

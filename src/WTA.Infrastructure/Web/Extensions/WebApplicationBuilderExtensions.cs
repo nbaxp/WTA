@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -49,23 +50,32 @@ namespace WTA.Infrastructure.Web.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
-    public static void BuildAndRun(this WebApplicationBuilder builder)
+    public static void BuildAndRun(this WebApplicationBuilder builder, string? serviceName = null)
     {
-        var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
+        Environment.SetEnvironmentVariable("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "SkyAPM.Agent.AspNetCore");
+        Environment.SetEnvironmentVariable("SKYWALKING__SERVICENAME", serviceName ?? Assembly.GetEntryAssembly()!.GetName().Name);
+
+        Serilog.Debugging.SelfLog.Enable(Console.Error);
         Log.Logger = new LoggerConfiguration()
-          .ReadFrom.Configuration(configuration)
-          .CreateBootstrapLogger();
+            .Enrich.FromLogContext()
+            .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
+            .CreateBootstrapLogger();
         try
         {
             Log.Information("Starting web application");
-            builder.Host.UseSerilog((hostingContext, configBuilder) =>
+
+            builder.Host.UseNacosConfig("NacosConfig");
+            builder.Host.UseSerilog((hostingContext, services, configBuilder) =>
             {
-                configBuilder.ReadFrom.Configuration(hostingContext.Configuration);
-            });
+                configBuilder
+                .ReadFrom.Configuration(hostingContext.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
+            }, writeToProviders: true);
             builder.Configure();
+            builder.Services.AddSkyAPM();
+
             var app = builder.Build();
             app.UseSerilogRequestLogging();
             app.Configure();

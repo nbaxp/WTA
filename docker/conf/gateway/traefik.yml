@@ -1,0 +1,14 @@
+log:
+  level: DEBUG
+api:
+  dashboard: true
+  insecure: true
+entryPoints:
+  web:
+   address: :80
+providers:
+  file:
+    filename: /etc/traefik/config/traefik-config.yml
+    watch: true
+  # http:
+  #     endpoint: "http://nacos:9000/api"

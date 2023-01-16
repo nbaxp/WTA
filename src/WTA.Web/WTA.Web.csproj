@@ -10,5 +10,5 @@
     <ProjectReference Include="..\WTA.Application\WTA.Application.csproj" />
     <ProjectReference Include="..\WTA.Infrastructure\WTA.Infrastructure.csproj" />
   </ItemGroup>
-
+  
 </Project>

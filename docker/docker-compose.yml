@@ -1,10 +1,134 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: netdata.nbaxp.com
+    # ports:
+    #   - 19999:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - ./data/netdata/config:/etc/netdata
+      - ./data/netdata/lib:/var/lib/netdata
+      - ./data/netdata/cache:/var/cache/netdata
+  portainer-ce:
+    image: portainer/portainer-ce:${PORTAINER_CE_VERSION}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer-ce:/data
+    ports:
+      - 9000:9000
+      - 9443:9443
+    restart: always
+  redis:
+    image: redis:${REDIS_VERSION}
+    ports:
+      - 6379:6379
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/redis:/data
+    restart: always
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    privileged: true
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - http.cors.enabled=true
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+  skywalking:
+    image: apache/skywalking-oap-server:${SKYWALKING_VERSION}
+    environment:
+      - SW_STORAGE=elasticsearch
+      - SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200
+    ports:
+      - 11800:11800
+      - 12800:12800
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - elasticsearch
+    restart: always
+  skywalking-ui:
+    image: apache/skywalking-ui:${SKYWALKING_VERSION}
+    environment:
+      SW_OAP_ADDRESS: http://skywalking:12800
+    ports:
+      - 8180:8080
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - skywalking
+    restart: always
+  gateway:
+    image: traefik:${TRAEFIK_VERSION}
+    ports:
+      - 59099:80
+      - 8280:8080
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf/gateway/traefik.yml:/etc/traefik/traefik.yml
+      - ./conf/gateway/traefik-config.yml:/etc/traefik/config/traefik-config.yml
+    restart: always
+  nginx:
+    image: nginx:${NGINX_VERSION}
+    ports:
+      - 80:80
+      - 443:443
+      - 19999:19999
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./conf/nginx/certs:/etc/nginx/certs
+      - ./conf/nginx/secrets:/etc/nginx/secrets
+      - ./log/nginx:/var/log/nginx
+    restart: always
+  nacos:
+    image: nacos/nacos-server:${NACOS_VERSION}
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+    ports:
+      - 8848:8848
+      - 9848:9848
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf/nacos:/home/nacos/conf
+      - ./data/nacos:/home/nacos/data
+      - ./logs/nacos:/home/nacos/logs
+    restart: always
   prometheus:
     container_name: prometheus
     image: prom/prometheus:${PROMETHEUS_VERSION}
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
@@ -15,30 +139,28 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - ./data/grafana:/var/lib/grafana
     restart: on-failure
-  nacos:
-    #http://localhost:8848/nacos nacos:nacos
-    container_name: nacos
-    hostname: nacos
-    image: nacos/nacos-server:${NACOS_VERSION}
+  seq:
+    image: datalust/seq:${SEQ_VERSION}
     environment:
-      - PREFER_HOST_MODE=hostname
-      - MODE=standalone
+      - ACCEPT_EULA=Y
     ports:
-      - 8848:8848
-      - 9848:9848
+      - 8380:80
+      - 5341:5341
     volumes:
-      - ./conf/nacos:/home/nacos/conf
-      - ./data/nacos:/home/nacos/data
-      - ./logs/nacos:/home/nacos/logs
-    command: tail -f /dev/null
-  loki:
-    #http://localhost:3100/metrics
-    image: grafana/loki:${LOKI_VERSION}
-    ports:
-      - 3100:3100
-    volumes:
-      - ./conf/loki/local-config.yaml:/etc/loki/local-config.yaml
-      - ./data/loki:/tmp/loki
-    #command: -config.file=/etc/loki/local-config.yaml
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/seq/data:/data
+  # cockroachdb:
+  #   image: cockroachdb/cockroach:${COCKROACHDB_VERSION}
+  #   ports:
+  #     - 26257:26257
+  #     - 8480:8080
+  #   volumes:
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ./data/cockroachdb:/cockroach/cockroach-data
+  #   command: start --insecure --max-sql-memory=.25 --cache=.25 --background

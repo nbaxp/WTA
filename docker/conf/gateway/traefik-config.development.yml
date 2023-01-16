@@ -1,0 +1,31 @@
+http:
+  routers:
+    sfs-core-host:
+      rule: "PathPrefix(`/api/{service:(label|filestore|reporting|message)}/`)"
+      service: sfs-core-host
+    sfs-auth-web:
+      rule: "PathPrefix(`/api/{service:(abp|identity|base|multi-tenancy|permission-management)}/`)"
+      service: sfs-auth-web
+    sfs-basedata-host:
+      rule: "PathPrefix(`/api/basedata/`)"
+      service: sfs-basedata-host
+    sfs-wms-host:
+      rule: "PathPrefix(`/api/wms/`)"
+      service: sfs-wms-host
+  services:
+    sfs-core-host:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:59092
+    sfs-auth-web:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:59093
+    sfs-basedata-host:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:59094
+    sfs-wms-host:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:59095

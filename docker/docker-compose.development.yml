@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:${SQLSERVER_VERSION}
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=aA123456!
+    ports:
+      - 1433:1433
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/sqlserver:/var/opt/mssql/data
+      - ./logs/sqlserver:/var/opt/mssql/log
+  gateway:
+    volumes:
+      - ./conf/gateway/traefik-config.development.yml:/etc/traefik/config/traefik-config.yml
+  nacos:
+    volumes:
+      - ./settings:/home/nacos/settings
