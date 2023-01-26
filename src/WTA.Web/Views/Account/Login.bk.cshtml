@@ -1,0 +1,17 @@
+﻿@section scripts{
+    <script>
+        var view = o => {
+            return {
+                template: html`<button @@click="count++">
+                        Count is: {{ count }}
+                        </button>`,
+                setup() {
+                    const count = o.ref(0);
+                    return {
+                        count
+                    }
+                }
+            };
+        };
+    </script>
+}

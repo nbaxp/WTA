@@ -50,10 +50,10 @@ public class TokenController : Controller
             {
                 var user = result.User!;
                 var claims = new Claim[] {
-            new Claim(this._tokenValidationParameters.NameClaimType, user.UserName!),
-            new Claim(nameof(user.Name), user.Name!),
-            new Claim(nameof(user.RoleHash),user.RoleHash!)
-        };
+                new Claim(this._tokenValidationParameters.NameClaimType, user.UserName!),
+                new Claim(nameof(user.Name), user.Name!),
+                new Claim(nameof(user.RoleHash),user.RoleHash!)
+            };
                 var roleClaims = _userService.GetRoles(model.UserName)
                   .Select(o => new Claim(this._tokenValidationParameters.RoleClaimType, o.Name));
                 var now = DateTime.UtcNow;

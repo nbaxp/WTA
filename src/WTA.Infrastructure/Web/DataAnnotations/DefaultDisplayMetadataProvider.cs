@@ -11,7 +11,7 @@ public class DefaultDisplayMetadataProvider : IDisplayMetadataProvider
         var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
         if (displayAttribute != null && string.IsNullOrEmpty(displayAttribute.Name))
         {
-            displayAttribute.Name = context.Key.Name;
+            displayAttribute.Name = $"{context.Key.ContainerType?.Name}.{context.Key.Name}";
         }
         //此处必须保留
         foreach (var item in attributes)

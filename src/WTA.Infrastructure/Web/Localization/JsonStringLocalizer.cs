@@ -15,10 +15,14 @@ public class JsonStringLocalizer : IStringLocalizer
         {
             var assembly = typeof(Resource).Assembly;
             var filePath = $"{assembly.GetName().Name}.Resources.{Thread.CurrentThread.CurrentCulture.Name}.json";
+            Dictionary<string, string>? result = null; ;
             using var stream = typeof(Resource).Assembly.GetManifestResourceStream(filePath);
-            using var jdoc = JsonDocument.Parse(stream);
-            var result = jdoc.Deserialize<Dictionary<string, string>>();
-            return result;
+            if (stream is not null)
+            {
+                using var jdoc = JsonDocument.Parse(stream);
+                result = jdoc.Deserialize<Dictionary<string, string>>();
+            }
+            return result ?? new Dictionary<string, string>();
         });
     }
 
@@ -26,7 +30,7 @@ public class JsonStringLocalizer : IStringLocalizer
     {
         get
         {
-            string value = GetString(name);
+            var value = GetString(name);
             return new LocalizedString(name, value ?? name, value == null);
         }
     }
@@ -49,6 +53,6 @@ public class JsonStringLocalizer : IStringLocalizer
 
     private string GetString(string key)
     {
-        return _keyValuePairs.Value[key] ?? key;
+        return _keyValuePairs.Value.TryGetValue(key, out var value) ? value : key;
     }
 }

@@ -7,16 +7,20 @@ public static class EventBusExtensions
 {
     public static void AddEventBus(this IServiceCollection services)
     {
-        services.AddTransient<IEventPublisher, EventPublisher>();
+        services.AddEventBus<DefaultEventPublisher>();
+    }
+
+    public static void AddEventBus<T>(this IServiceCollection services) where T : class, IEventPublisher
+    {
+        services.AddTransient<IEventPublisher, T>();
         AppDomain.CurrentDomain.GetAssemblies().SelectMany(o => o.GetTypes())
           .Where(t => t.GetInterfaces().Any(o => o.IsGenericType && o.GetGenericTypeDefinition() == typeof(IEventHander<>)))
           .ToList()
-          .ForEach(t =>
+          .ForEach(type =>
           {
-              t.GetInterfaces().Where(o => o.IsGenericType && o.GetGenericTypeDefinition() == typeof(IEventHander<>)).ToList().ForEach(o =>
-          {
-              services.AddTransient(o, t);
-          });
+              type.GetInterfaces()
+              .Where(o => o.IsGenericType && o.GetGenericTypeDefinition() == typeof(IEventHander<>)).ToList()
+              .ForEach(o => services.AddTransient(o, type));
           });
     }
 }

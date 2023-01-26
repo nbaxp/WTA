@@ -6,4 +6,5 @@ public class ValidateUserResult
 {
     public ValidateUserStatus Status { get; set; }
     public User? User { get; set; }
+    public OAuth2TokenResult? TokenResult { get; set; }
 }

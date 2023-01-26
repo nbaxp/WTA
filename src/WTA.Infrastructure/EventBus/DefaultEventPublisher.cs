@@ -4,11 +4,11 @@ using WTA.Application.Abstractions.Extensions;
 
 namespace WTA.Infrastructure.EventBus;
 
-public class EventPublisher : IEventPublisher
+public class DefaultEventPublisher : IEventPublisher
 {
     private readonly IServiceProvider _applicationServices;
 
-    public EventPublisher(IServiceProvider applicationServices)
+    public DefaultEventPublisher(IServiceProvider applicationServices)
     {
         this._applicationServices = applicationServices;
     }

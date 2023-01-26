@@ -20,6 +20,11 @@ public class HomeController : Controller
         this._testService = testService;
     }
 
+    public IActionResult Index()
+    {
+        return View();
+    }
+
     public async Task<IActionResult> Test()
     {
         _ = this._testService.Test();

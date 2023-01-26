@@ -1,0 +1,19 @@
+﻿@section scripts{
+    <!--@this.Context.Request.GetDisplayUrl()-->
+    <script>
+        var url = '@this.Context.Request.GetDisplayUrl()';
+        var options = { headers: { accept: 'application/json' } };
+        fetch(url, options).then(o => o.json()).then(o => console.log(o));
+        var view = o => {
+            return {
+                template: `<button @@click="count++">Count is :::: {{ count }}</button>`,
+                setup() {
+                    const count = o.ref(0);
+                    return {
+                        count
+                    }
+                }
+            };
+        };
+    </script>
+}

@@ -10,5 +10,9 @@
     <ProjectReference Include="..\WTA.Application\WTA.Application.csproj" />
     <ProjectReference Include="..\WTA.Infrastructure\WTA.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
   
 </Project>

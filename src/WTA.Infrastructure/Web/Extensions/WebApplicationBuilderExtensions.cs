@@ -64,7 +64,10 @@ public static class WebApplicationBuilderExtensions
         {
             Log.Information("Starting web application");
 
-            builder.Host.UseNacosConfig("NacosConfig");
+            if (builder.Configuration.GetValue("UseNacos", false))
+            {
+                builder.Host.UseNacosConfig("NacosConfig");
+            }
             builder.Host.UseSerilog((hostingContext, services, configBuilder) =>
             {
                 configBuilder
@@ -100,6 +103,7 @@ public static class WebApplicationBuilderExtensions
             options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
             options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         });
         builder.Services.Configure<FormOptions>(options =>
         {
@@ -118,23 +122,23 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddServices(WebApplicationBuilder builder)
     {
+        builder.Services.Configure<IdentityOptions>(builder.Configuration.GetSection(IdentityOptions.Position));
         builder.Services.AddHttpClient();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
-
         builder.Services.AddEventBus();
         builder.Services.AddSingleton<ILinqInclude, DefaultLinqInclude>();
         builder.Services.AddSingleton<ILinqDynamic, DefaultLinqDynamic>();
         builder.Services.AddSingleton<IMapper, DefaultMapper>();
         builder.Services.AddSingleton<IUrlService, DefaultUrlService>();
+        builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddTransient<IGuidGenerator, DefaultGuidGenerator>();
-        builder.Services.AddScoped<ITenantService, TenantService>();
         builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-
-        builder.Services.Configure<IdentityOptions>(builder.Configuration.GetSection(IdentityOptions.Position));
-        builder.Services.TryAddTransient<IUserService, UserService>();
-        builder.Services.TryAddTransient<IPermissionService, PermissionService>();
+        builder.Services.AddTransient<IUserService, UserService>();
+        builder.Services.AddTransient<IPermissionService, PermissionService>();
         builder.Services.AddTransient<ITestService<User>, TestService>();
+        builder.Services.AddScoped<ITenantService, TenantService>();
+
     }
 
     private static void AddAuthentication(WebApplicationBuilder builder)
@@ -178,6 +182,18 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddMvc(WebApplicationBuilder builder)
     {
+        builder.Services.Configure<RazorViewEngineOptions>(options =>
+        {
+            options.ViewLocationFormats.Clear();
+            options.ViewLocationFormats.Add("/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+            options.ViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            options.ViewLocationFormats.Add("/Views/Shared/Default" + RazorViewEngine.ViewExtension);
+
+            options.AreaViewLocationFormats.Add("/Areas/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+            options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            options.AreaViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            options.AreaViewLocationFormats.Add("/Views/Shared/Default" + RazorViewEngine.ViewExtension);
+        });
         builder.Services.AddRouting(options => options.ConstraintMap["slugify"] = typeof(SlugifyParameterTransformer));
 
         // MVC
@@ -190,11 +206,12 @@ public static class WebApplicationBuilderExtensions
         })
         .AddJsonOptions(options =>
         {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
             if (builder.Environment.IsDevelopment())
             {
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                 options.JsonSerializerOptions.WriteIndented = true;
             }
         })

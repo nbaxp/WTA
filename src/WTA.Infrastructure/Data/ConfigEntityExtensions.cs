@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using WTA.Application.Domain;
 using WTA.Application.Domain.Blogs;
 using WTA.Application.Domain.System;
 
@@ -11,7 +10,7 @@ public static class ConfigEntityExtensions
     {
         // builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         // System
-        builder.Entity<Event>().HasIndex(o => o.Entity);
+        builder.Entity<EntityEvent>().HasIndex(o => o.Entity);
         // Setting
         builder.Entity<Setting>().HasIndex(o => o.Key).IsUnique();
         // User

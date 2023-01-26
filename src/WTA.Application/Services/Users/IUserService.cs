@@ -9,4 +9,6 @@ public interface IUserService
     User? GetUser(string userName);
 
     List<Role> GetRoles(string userName);
+
+    void SignIn(string userName, bool rememberMe);
 }

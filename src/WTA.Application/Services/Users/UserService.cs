@@ -11,12 +11,17 @@ public class UserService : IUserService
     private readonly IRepository<User> _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IdentityOptions _identityOptions;
+    private readonly ITokenService _tokenService;
 
-    public UserService(IRepository<User> userRepository, IPasswordHasher passwordHasher, IOptions<IdentityOptions> options)
+    public UserService(IRepository<User> userRepository,
+        IPasswordHasher passwordHasher,
+        IOptions<IdentityOptions> options,
+        ITokenService tokenService)
     {
         this._userRepository = userRepository;
         this._passwordHasher = passwordHasher;
         this._identityOptions = options.Value;
+        this._tokenService = tokenService;
     }
 
     public ValidateUserResult ValidateUser(LoginModel model)
@@ -45,6 +50,7 @@ public class UserService : IUserService
             if (user.PasswordHash == _passwordHasher.HashPassword(model.Password, user.SecurityStamp!))
             {
                 result.Status = ValidateUserStatus.Successful;
+                result.TokenResult = this._tokenService.CreateToken(model.UserName, model.RememberMe);
             }
             else
             {
@@ -90,5 +96,10 @@ public class UserService : IUserService
     private void UpdateUser()
     {
         this._userRepository.SaveChangesAsync();
+    }
+
+    public void SignIn(string userName, bool rememberMe)
+    {
+        throw new NotImplementedException();
     }
 }

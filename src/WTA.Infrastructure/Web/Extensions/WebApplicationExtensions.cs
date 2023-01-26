@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,7 @@ public static class WebApplicationExtensions
 {
     public static void Configure(this WebApplication app)
     {
+        app.UsePathBase(app.Configuration.GetValue<string>("PathBase"));
         ApplicationContext.Configure(app.Services);
         if (app.Environment.IsDevelopment())
         {
@@ -55,12 +57,15 @@ public static class WebApplicationExtensions
         app.UseRouting();
         app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
         app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
+        app.MapFallbackToFile("/index.html");
     }
 
     private static void UseLocalization(WebApplication app)
     {
         var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
         app.UseRequestLocalization(localizationOptions);
+        Thread.CurrentThread.CurrentCulture = localizationOptions.DefaultRequestCulture.Culture;
+        Thread.CurrentThread.CurrentUICulture = localizationOptions.DefaultRequestCulture.UICulture;
     }
 
     private static void UseSwagger(WebApplication app)
@@ -96,7 +101,7 @@ public static class WebApplicationExtensions
         using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
         if (db.Database.EnsureCreated())
         {
-            scope.ServiceProvider.GetRequiredService<IDbSeed>().Seed().Wait();
+            scope.ServiceProvider.GetRequiredService<IDbSeed>().Initialize();
         }
     }
 }
