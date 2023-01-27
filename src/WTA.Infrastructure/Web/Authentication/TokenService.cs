@@ -26,20 +26,34 @@ public class TokenService : ITokenService
         this._jwtOptions = jwtOptions.Value;
     }
 
-    public OAuth2TokenResult CreateToken(string userName, bool rememberMe, params Claim[] additionalClaims)
+    public string CreatAccessTokenForCookie(string userName, bool rememberMe, out TimeSpan timeout, params Claim[] additionalClaims)
     {
         var now = DateTime.UtcNow;
-        var accessTokenTimeout = rememberMe ? TimeSpan.FromDays(365) : _jwtOptions.AccessTokenExpires;
+        timeout = rememberMe ? TimeSpan.FromDays(365) : _jwtOptions.RefreshTokenExpires;
+        var subject = CreateSubject(userName, additionalClaims);
+        var toeken = CreateToken(subject, now, timeout);
+        return toeken;
+    }
+
+    public OAuth2TokenResult CreateAuth2TokenResult(string userName, bool rememberMe, params Claim[] additionalClaims)
+    {
+        var now = DateTime.UtcNow;
+        var subject = CreateSubject(userName, additionalClaims);
+        return new OAuth2TokenResult
+        {
+            AccessToken = CreateToken(subject, now, _jwtOptions.AccessTokenExpires),
+            RefreshToken = CreateToken(subject, now, rememberMe ? TimeSpan.FromDays(365) : _jwtOptions.RefreshTokenExpires),
+            expiresIn = (long)_jwtOptions.AccessTokenExpires.TotalSeconds
+        };
+    }
+
+    private ClaimsIdentity CreateSubject(string userName, Claim[] additionalClaims)
+    {
         var claims = new List<Claim>(additionalClaims){
             new Claim(_tokenValidationParameters.NameClaimType,userName)
         };
         var subject = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
-        return new OAuth2TokenResult
-        {
-            AccessToken = CreateToken(subject, now, accessTokenTimeout),
-            RefreshToken = CreateToken(subject, now, _jwtOptions.RefreshTokenExpires),
-            expiresIn = (long)accessTokenTimeout.TotalSeconds
-        };
+        return subject;
     }
 
     private string CreateToken(ClaimsIdentity subject, DateTime now, TimeSpan timeout)

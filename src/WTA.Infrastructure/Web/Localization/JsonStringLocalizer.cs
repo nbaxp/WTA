@@ -53,6 +53,14 @@ public class JsonStringLocalizer : IStringLocalizer
 
     private string GetString(string key)
     {
-        return _keyValuePairs.Value.TryGetValue(key, out var value) ? value : key;
+        if (_keyValuePairs.Value.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+        if (key.Contains('.') && _keyValuePairs.Value.TryGetValue(key.Substring(key.IndexOf('.') + 1), out var value2))
+        {
+            return value2;
+        }
+        return key;
     }
 }

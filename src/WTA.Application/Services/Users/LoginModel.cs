@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WTA.Application.Services.Users;
 
@@ -19,4 +20,7 @@ public class LoginModel
 
     [Display]
     public bool RememberMe { get; set; }
+
+    [HiddenInput(DisplayValue = false)]
+    public string? ReturnUrl { get; set; }
 }

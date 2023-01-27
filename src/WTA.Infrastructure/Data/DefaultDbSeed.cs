@@ -16,7 +16,7 @@ public class DefaultDbSeed : IDbSeed
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public DefaultDbSeed(IServiceProvider serviceProvider, DbContext db)
+    public DefaultDbSeed(IServiceProvider serviceProvider)
     {
         this._serviceProvider = serviceProvider;
     }
@@ -25,17 +25,20 @@ public class DefaultDbSeed : IDbSeed
     {
         using var scope = this._serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
-        var _localizer = services.GetRequiredService<IStringLocalizer>();
-        var _passwodHasher = services.GetRequiredService<IPasswordHasher>();
-        var _db = services.GetRequiredService<DbContext>();
+        var localizer = services.GetRequiredService<IStringLocalizer>();
+        var passwodHasher = services.GetRequiredService<IPasswordHasher>();
+        using var context = services.GetRequiredService<DbContext>();
+        using var transaction = context.Database.BeginTransaction();
         try
         {
             // InitSystem(_localizer, _db);
             // await InitSystem().ConfigureAwait(false);
             // User
-            InitUsers(_passwodHasher, _db);
-            InitBlog(_db);
-            _db.SaveChanges();
+            InitUsers(passwodHasher, context);
+            context.SaveChanges();
+            InitBlog(context);
+            context.SaveChanges();
+            transaction.Commit();
         }
         catch (Exception ex)
         {

@@ -63,6 +63,7 @@ public static class ModelBuilderExtensions
     {
         foreach (var entity in builder.Model.GetEntityTypes().Where(o => o.ClrType.IsAssignableTo(typeof(ITenant))).ToList())
         {
+            var tenantEntity = entity as ITenant;
             var tenantProperty = entity.FindProperty("Tenant");
             var parameter = Expression.Parameter(entity.ClrType, "p");
             var left = Expression.Property(parameter, tenantProperty!.PropertyInfo!);

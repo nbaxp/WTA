@@ -7,7 +7,7 @@ namespace WTA.Application.Domain.Blogs;
 [SystemModule]
 [Permission]
 [Display(Name = "评论")]
-public class BlogComment : BaseEntity
+public class BlogComment : BaseEntity, ITenant
 {
     public Guid UserId { get; set; }
     public Guid BlogPostId { get; set; }
@@ -21,4 +21,5 @@ public class BlogComment : BaseEntity
     public BlogPost BlogPost { get; set; } = null!;
     public BlogComment? Parent { get; set; }
     public List<BlogComment> Children { get; set; } = new List<BlogComment>();
+    public string? Tenant { get; set; }
 }

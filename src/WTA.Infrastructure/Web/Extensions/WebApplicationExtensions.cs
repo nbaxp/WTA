@@ -33,9 +33,7 @@ public static class WebApplicationExtensions
     {
         // 设置首页为 index.html
         var options = new DefaultFilesOptions();
-        options.DefaultFileNames.Clear();
-        options.DefaultFileNames.Add("index.html");
-        app.UseDefaultFiles(options);
+        // app.UseDefaultFiles(options);
 
         // app 下载配置
         var provider = new FileExtensionContentTypeProvider();

@@ -11,6 +11,14 @@
 <body>
     <div id="app">
     </div>
+    <template id="layout">
+        <div>
+          <h1>Layout</h1>
+          <div>
+            <page />
+          </div>
+        </div>
+    </template>
     <script type="importmap">
         {
           "imports": {
@@ -23,6 +31,7 @@
             "resize-detector": "./libs/resize-detector/index.js",
             "echarts/core": "./libs/echarts/echarts.esm.min.js",
             "vue-echarts": "./libs/vue-echarts/index.esm.min.js",
+            "element-plus": "./libs/element-plus/index.full.min.mjs",
             "better-mock": "./libs/better-mock/mock.browser.esm.js",
             "html": "./utils/html.js"
           }
@@ -33,14 +42,13 @@
     </script>
     @RenderSection("scripts",false)
     <script type="module">
-        import { createApp } from 'vue';
-        import router from './router/index.js';
-        import store from './store/index.js';
-        import App from './App.js';
         import * as Vue from 'vue';
-        //Vue.createApp(view(Vue)).mount('#app');
-
-        createApp(App).use(router).use(store).mount('#app');
+        const page = window.page;
+        const layout = {
+            components: { page },
+            template: '#layout'
+        };
+        Vue.createApp(layout).mount('#app');
     </script>
 </body>
 </html>

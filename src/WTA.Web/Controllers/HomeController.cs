@@ -20,6 +20,7 @@ public class HomeController : Controller
         this._testService = testService;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
         return View();

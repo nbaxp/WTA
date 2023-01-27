@@ -8,11 +8,13 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -171,10 +173,25 @@ public static class WebApplicationBuilderExtensions
             o.TokenValidationParameters = tokenValidationParameters;
             o.Events = new JwtBearerEvents
             {
-                OnAuthenticationFailed = c =>
-            {
-                return Task.CompletedTask;
-            }
+                OnMessageReceived = context =>
+                {
+                    if (!context.Request.IsJsonRequest() && context.Request.Cookies.TryGetValue("access_key", out var token))
+                    {
+                        context.Token = token;
+                    }
+                    return Task.CompletedTask;
+                },
+                OnChallenge = context =>
+                {
+                    if (!context.Request.IsJsonRequest())
+                    {
+                        var linkGenerator = context.HttpContext.RequestServices.GetRequiredService<LinkGenerator>();
+                        var url = linkGenerator.GetPathByAction("Login", "Account", new { returnUrl = context.Request.GetDisplayUrl() }, pathBase: context.HttpContext.Request.PathBase);
+                        context.Response.Redirect(url!);
+                        context.HandleResponse();
+                    }
+                    return Task.CompletedTask;
+                },
             };
         });
         builder.Services.AddAuthorization();

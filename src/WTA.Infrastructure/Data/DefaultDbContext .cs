@@ -38,16 +38,19 @@ public class DefaultDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Config();
-        modelBuilder.ConfigComment()
-            .ConfigKey()
-            .ConfigConcurrencyStamp()
-            .ConfigTreeNode();
-        //.ConfigTenant(_tenant);
+        modelBuilder.ConfigComment();
+        modelBuilder.ConfigKey();
+        modelBuilder.ConfigConcurrencyStamp();
+        modelBuilder.ConfigTreeNode();
+        using var scope = _serviceProvider.CreateScope();
+        var services = scope.ServiceProvider;
+        var enantService = services.GetRequiredService<ITenantService>();
+        modelBuilder.ConfigTenant(enantService.Tenant);
     }
 
     public override int SaveChanges()
     {
-        var scope = this._serviceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
         var entries = GetEntries();
         BeforeSave(entries, services);
@@ -58,7 +61,7 @@ public class DefaultDbContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
         var entries = GetEntries();
         BeforeSave(entries, services);
@@ -69,7 +72,7 @@ public class DefaultDbContext : DbContext
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        var scope = this._serviceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
         var entries = GetEntries();
         BeforeSave(entries, services);

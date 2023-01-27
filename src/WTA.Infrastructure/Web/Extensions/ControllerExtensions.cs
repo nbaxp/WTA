@@ -4,14 +4,9 @@ namespace WTA.Infrastructure.Web.Extensions;
 
 public static class ControllerExtensions
 {
-    public static bool IsJsonRequest(this ControllerBase controller)
-    {
-        return controller.Request.Headers.Accept.Contains("application/json");
-    }
-
     public static IActionResult Result(this Controller controller, object? model, string? viewName = null)
     {
-        if (controller.IsJsonRequest())
+        if (controller.Request.IsJsonRequest())
         {
             return controller.Json(new
             {

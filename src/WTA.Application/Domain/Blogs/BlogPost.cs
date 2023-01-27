@@ -7,7 +7,7 @@ namespace WTA.Application.Domain.Blogs;
 [SystemModule]
 [Permission]
 [Display(Name = "帖子")]
-public class BlogPost : BaseEntity
+public class BlogPost : BaseEntity, ITenant
 {
     public Guid UserId { get; set; }
     public string? MetaKeywords { get; set; }
@@ -21,4 +21,5 @@ public class BlogPost : BaseEntity
     public DateTimeOffset CreatedOn { get; set; }
     public User User { get; set; } = null!;
     public List<BlogComment> BlogCommnets { get; set; } = new List<BlogComment>();
+    public string? Tenant { get; set; }
 }
