@@ -4,7 +4,7 @@ import LayoutFooter from './layout-footer.js';
 
 export default {
   components: { LayoutHeader, LayoutFooter },
-  template: html`<el-container class="default-layout h-full">
+  template: html`<el-container class="default-layout h-100">
     <el-scrollbar>
       <el-header class="el-header">
         <div class="block-container">
@@ -17,7 +17,7 @@ export default {
         </div>
       </el-main>
       <el-footer>
-        <div class="block-container">
+        <div class="h-100">
           <layout-footer />
         </div>
       </el-footer>

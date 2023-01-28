@@ -17,7 +17,7 @@
   "DataTypeAttribute_DateTime": "字段 “{0}” 不是有效的日期格式。",
   "CustomValidationAttribute": "“{0}” 是无效的。",
   "ValidationAttribute": "字段 “{0}” 是无效的。",
-  "Name": "Asp.NET7+ Vue3",
+  "Name": "Asp.NET7+Vue3",
   "Copyright": "©2020-{0} 版权所有",
   "Register": "注册",
   "ForgotPassword": "忘记密码？",

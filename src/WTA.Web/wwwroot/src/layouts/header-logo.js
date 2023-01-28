@@ -4,7 +4,7 @@ import { useAppStore } from '../store/index.js';
 export default {
   template: html`<a
     :href="appStore.basePath"
-    class="block logo"
+    class="d-flex justify-content-center align-items-center h-100"
     :class="{ aside: hasAside, collapse: appStore.menuCollapse }"
   >
     <el-space>

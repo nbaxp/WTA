@@ -1,8 +1,6 @@
 body {
   margin: 0;
   padding: 0;
-  font-size: 14px;
-  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -13,11 +11,11 @@ body {
   background-color: var(--el-bg-color-page);
 }
 
-.root {
+/* .root {
   height: 100%;
-}
+} */
 
-#app .el-header {
+.el-header {
   position: fixed;
   z-index: 10;
   width: 100%;
@@ -107,6 +105,12 @@ button.el-button:focus {
   align-items: center;
   justify-content: space-between;
   height: 100%;
+}
+
+.block-container{
+  width: 1200px;
+  height: 100%;
+  margin: auto;
 }
 
 .center {

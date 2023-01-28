@@ -1,22 +1,20 @@
 import html from './utils/index.js';
-import { ref } from 'vue';
-// import zh from 'element-plus/locale/zh-cn.js';
-// import en from 'element-plus/locale/en.js';
 import { useAppStore } from './store/index.js';
-
-const template = html`<el-config-provider
-  :size="size"
-  :button="{ autoInsertSpace: true }"
-  :locale="currentLocale"
->
-  <slot />
-</el-config-provider>`;
+import en from '../libs/element-plus/locale/en.min.mjs';
+import zh from '../libs/element-plus/locale/zh-cn.min.mjs';
 
 export default {
-  template,
+  template: html`<el-config-provider
+  :size="appStore.size"
+  :button="{ autoInsertSpace: true }"
+  :locale="appStore.locale.current"
+>
+  <slot />
+</el-config-provider>`,
   setup() {
-    const currentLocale = ref();
+    const locales = { en, zh };
     const appStore = useAppStore();
+    const currentLocale = locales[appStore.locale.current];
     return {
       currentLocale,
       appStore,
