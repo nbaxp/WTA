@@ -201,15 +201,14 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.Configure<RazorViewEngineOptions>(options =>
         {
-            options.ViewLocationFormats.Clear();
             options.ViewLocationFormats.Add("/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
             options.ViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
-            options.ViewLocationFormats.Add("/Views/Shared/Default" + RazorViewEngine.ViewExtension);
+            options.ViewLocationFormats.Add("/Views/Shared/Default" + RazorViewEngine.ViewExtension);// add for default
 
             options.AreaViewLocationFormats.Add("/Areas/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
             options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/Default" + RazorViewEngine.ViewExtension);// add for default
             options.AreaViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
-            options.AreaViewLocationFormats.Add("/Views/Shared/Default" + RazorViewEngine.ViewExtension);
         });
         builder.Services.AddRouting(options => options.ConstraintMap["slugify"] = typeof(SlugifyParameterTransformer));
 

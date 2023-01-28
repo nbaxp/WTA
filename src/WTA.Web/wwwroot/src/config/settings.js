@@ -1,10 +1,15 @@
 const settings = {
-  name: 'Admin EP',
-  copyright: '© copyright 2022',
+  version: '0.1.0',
+  basePath: '/',
+  locale: {
+    current: 'zh',
+    default: 'zh',
+    items: [],
+    resources: {},
+  },
   mode: 'auto',
   themeColor: '#409eff',
   size: 'default',
-  locale: 'zh',
   showBreadcrumb: true,
   isUseTabsRouter: true,
   menuCollapse: false,

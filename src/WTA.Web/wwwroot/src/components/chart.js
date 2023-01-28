@@ -1,4 +1,4 @@
-import html from 'html';
+import html from '../utils/index.js';
 import { nextTick, ref } from 'vue';
 import VCharts from 'vue-echarts';
 

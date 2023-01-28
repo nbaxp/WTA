@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="logs\" />
-    <Folder Include="wwwroot\libs\element-plus\" />
+    <Folder Include="wwwroot\libs\%40element-plus\icons-vue\" />
   </ItemGroup>
   
 </Project>

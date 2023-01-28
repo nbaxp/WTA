@@ -50,7 +50,7 @@
     </script>
     @RenderSection("scripts",false)
     <script type="module">
-        import layout from './src/layouts/default.js';
+        import layout from './src/layouts/admin.js';
         import init from './src/main.js';
         const config = {
             basePath: '@basePath',
@@ -63,9 +63,9 @@
             root: '#app',
             layout: layout,
             page: window.page,
-            user:{
+            user: {
                 isAuthenticated: @Json.Serialize(isAuthenticated),
-                name:'@userName'
+                name: '@userName'
             }
         };
         init(config);

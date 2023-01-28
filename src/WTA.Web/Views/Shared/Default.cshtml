@@ -5,22 +5,21 @@
 }
 @section scripts{
     <template id="page">
-        <h1>{{schema.title}}</h1>
-        <app-form ref="formRef" v-model="model" mode="create">
-            <template #footer>
-                <el-form-item>
-                    <el-button type="primary" @@click="submit">@localizer["Confirm"]</el-button>
-                </el-form-item>
-            </template>
-        </app-form>
+        <h1>{{appStore.basePath}}:{{$t('name')}}-{{schema.title}}</h1>
+        <app-form ref="formRef" v-model="model" mode="create"></app-form>
     </template>
     <script type="module">
         import { ref, reactive } from 'vue';
         import { ElMessage } from 'element-plus';
+        import request from 'request';
+        import appForm from './src/components/form/app-form.js';
+        import { useAppStore } from './src/store/index.js';
 
         window.page = {
+            components: { appForm },
             template: '#page',
             setup() {
+                const appStore = useAppStore();
                 const url = ref('@action');
                 var model = reactive(@Json.Serialize(Model));
                 var errors = reactive(@Json.Serialize(ViewData.ModelState.ToErrors()));
@@ -49,6 +48,7 @@
                 };
 
                 return {
+                    appStore,
                     url,
                     model,
                     errors,

@@ -88,10 +88,11 @@ public class AccountController : Controller
         }
     }
 
+    [HttpPost]
     public IActionResult Logout()
     {
         var key = UnderlineJsonNamingPolicy.ToUnderline(nameof(OAuth2TokenResult.AccessToken));
         Response.Cookies.Delete(key);
-        return Ok();
+        return Ok(true);
     }
 }
