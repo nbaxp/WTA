@@ -9,8 +9,8 @@ import HeaderSettings from './header-settings.js';
 
 export default {
   components: { HeaderLogo, HeaderSettings, SvgIcon, ElMessage, ElMessageBox },
-  template: html` <div class="between">
-      <div class="between">
+  template: html` <div class="d-flex justify-content-between align-items-center h-100">
+      <div class="d-flex justify-content-between align-items-center h-100">
         <header-logo :has-aside="hasAside" />
         <div
           v-if="hasAside"
@@ -47,7 +47,7 @@ export default {
       </template>
     </el-menu> -->
       </div>
-      <div class="between">
+      <div class="d-flex justify-content-between align-items-center h-100">
         <el-space>
           <template v-if="appStore.user.isAuthenticated">
             <el-dropdown class="cursor-pointer">
@@ -126,7 +126,7 @@ export default {
             class="cursor-pointer"
             @click="setting.toggle()"
           >
-            <i-ep-setting />
+            <ep-setting />
           </el-icon>
         </el-space>
       </div>

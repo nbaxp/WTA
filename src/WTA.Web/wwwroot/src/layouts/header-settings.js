@@ -3,8 +3,10 @@ import { ref, watch } from 'vue';
 import { useClipboard } from '@vueuse/core';
 import { ElMessage } from 'element-plus';
 import { useAppStore } from '../store/index.js';
+import { Platform, Sunny, Moon } from '../../libs/@element-plus/icons-vue/index.min.js';
 
 export default {
+  components: { Platform, Sunny, Moon },
   template: html`<el-form
     ref="formRef"
     :model="appStore"

@@ -4,16 +4,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+a {
+  text-decoration: none;
+}
+
+h1 {
+  color: var(--el-color-primary);
+  font-size: 18px;
+  line-height: 1.5em;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   background-color: var(--el-bg-color-page);
 }
-
-/* .root {
-  height: 100%;
-} */
 
 .el-header {
   position: fixed;
@@ -31,28 +37,13 @@ body {
   min-height: 100%;
 }
 
-.router-tab {
-  box-sizing: border-box;
-  height: 40px;
-  background-color: var(--el-fill-color-blank);
-  border-width: 0 !important;
-}
-
-  .router-tab .el-tabs__item {
-    border-bottom-width: 0;
-  }
-
-  .router-tab .el-tabs__content {
-    display: none;
-  }
-
 .el-main {
   min-height: calc(100% - 60px);
 }
 
-  .el-main.tabs {
-    min-height: calc(100% - 60px - 41px);
-  }
+.el-main.tabs {
+  min-height: calc(100% - 60px - 41px);
+}
 
 .el-footer {
   width: 100%;
@@ -100,6 +91,29 @@ button.el-button:focus {
   color: var(--el-text-color-primary);
 }
 
+.router-tab {
+  box-sizing: border-box;
+  height: 40px;
+  background-color: var(--el-fill-color-blank);
+  border-width: 0 !important;
+}
+
+.router-tab .el-tabs__item {
+  border-bottom-width: 0;
+}
+
+.router-tab .el-tabs__content {
+  display: none;
+}
+
+/* .root {
+  height: 100%;
+} */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .between {
   display: flex;
   align-items: center;
@@ -107,7 +121,7 @@ button.el-button:focus {
   height: 100%;
 }
 
-.block-container{
+.block-container {
   width: 1200px;
   height: 100%;
   margin: auto;
@@ -126,10 +140,4 @@ button.el-button:focus {
 
 .logo img {
   height: 32px;
-}
-
-h1 {
-  color: var(--el-color-primary);
-  font-size: 18px;
-  line-height: 1.5em;
 }
