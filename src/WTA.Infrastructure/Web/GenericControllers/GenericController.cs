@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WTA.Application.Abstractions.Data;
@@ -6,11 +7,19 @@ using WTA.Infrastructure.Web.Extensions;
 
 namespace WTA.Infrastructure.Web.GenericControllers;
 
+/// <summary>
+/// 泛型控制器
+/// </summary>
+/// <typeparam name="TEntity">实体</typeparam>
+/// <typeparam name="TModel">新建和编辑模型</typeparam>
+/// <typeparam name="TListModel">列表项模型</typeparam>
+/// <typeparam name="TSearchModel">查询模型</typeparam>
 [GenericControllerNameConvention]
-public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
+public class GenericController<TEntity, TModel, TListModel, TSearchModel> : Controller
   where TEntity : class
-  where TDisplayModel : class
-  where TEditModel : class
+  where TModel : class
+  where TListModel : class
+  where TSearchModel : PaginationViewModel<TListModel>
 {
     private readonly IRepository<TEntity> _repository;
 
@@ -19,8 +28,10 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
         this._repository = repository;
     }
 
+    #region List
+
     [HttpGet]
-    public virtual async Task<IActionResult> Index([FromQuery] PaginationViewModel<TEntity> model)
+    public virtual async Task<IActionResult> Index([FromQuery] TSearchModel model)
     {
         try
         {
@@ -36,7 +47,11 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
                 {
                     query = query.OrderBy(model.OrderBy);
                 }
-                model.Items = await query.Skip(model.PageSize * (model.PageIndex - 1)).Take(model.PageSize).ToListAsync().ConfigureAwait(false);
+                model.Items = (await query.Skip(model.PageSize * (model.PageIndex - 1))
+                    .Take(model.PageSize)
+                    .ToListAsync()
+                    .ConfigureAwait(false))
+                    .To<List<TListModel>>();
                 return Json(new
                 {
                     model,
@@ -50,6 +65,10 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
             return Problem(ex.Message);
         }
     }
+
+    #endregion List
+
+    #region Create/Edit/Delete
 
     //[HttpGet("{id}")]
     //public virtual async Task<IActionResult> Details(Guid? id)
@@ -71,16 +90,16 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
     //  });
     //}
 
-    //[HttpGet]
-    //public virtual IActionResult Create()
-    //{
-    //  var model = Activator.CreateInstance(typeof(TEditModel));
-    //  return this.Result(model);
-    //}
+    [HttpGet]
+    public virtual IActionResult Create()
+    {
+        var model = Activator.CreateInstance(typeof(TModel));
+        return this.Result(model);
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public virtual async Task<IActionResult> Create([FromBody] TEditModel model)
+    public virtual async Task<IActionResult> Create([FromBody] TModel model, [FromQuery] bool continueEditing)
     {
         if (ModelState.IsValid)
         {
@@ -91,4 +110,45 @@ public class GenericController<TEntity, TDisplayModel, TEditModel> : Controller
         }
         return BadRequest();
     }
+
+    [HttpGet]
+    public virtual IActionResult Edit()
+    {
+        throw new NotImplementedException();
+
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public virtual IActionResult Edit([FromBody] TModel model, [FromQuery] bool continueEditing)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost]
+    public virtual IActionResult Delete([FromBody] Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost]
+    public virtual IActionResult DeleteSelected([FromBody] ICollection<Guid> selectedIds)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Export/Import
+    public virtual IActionResult Export([FromBody] TSearchModel model, [FromQuery] bool all)
+    {
+        //return File(bytes, MimeTypes.TextXlsx, "categories.xlsx");
+        throw new NotImplementedException();
+    }
+
+    public virtual IActionResult Import(IFormFile importexcelfile)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
 }

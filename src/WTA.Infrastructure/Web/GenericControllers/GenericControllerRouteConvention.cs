@@ -8,7 +8,7 @@ public class GenericControllerRouteConvention : IControllerModelConvention
 {
     public void Apply(ControllerModel controller)
     {
-        if (controller.ControllerType.IsGenericType && controller.ControllerType.GetGenericTypeDefinition() == typeof(GenericController<,,>))
+        if (controller.ControllerType.IsGenericType && controller.ControllerType.GetGenericTypeDefinition() == typeof(GenericController<,,,>))
         {
             var genericType = controller.ControllerType.GenericTypeArguments[0];
             var attribute = genericType.GetCustomAttributes(true).FirstOrDefault(o => o.GetType().IsAssignableTo(typeof(GroupAttribute))) as GroupAttribute;

@@ -7,7 +7,7 @@ namespace WTA.Web.Controllers;
 
 [Route("[controller]/[action]")]
 [ApiController]
-public class UserController : GenericController<User, User, User>
+public class UserController : GenericController<User, User, User, PaginationViewModel<User>>
 {
     public UserController(IRepository<User> repository) : base(repository)
     {

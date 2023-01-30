@@ -22,9 +22,10 @@ public class GenericControllerFeatureProvider : IApplicationFeatureProvider<Cont
             if (!feature.Controllers.Any(o => o.Name == typeName &&
                 o.BaseType != null &&
                 o.BaseType.IsGenericType &&
-                o.BaseType.GetGenericTypeDefinition() == typeof(GenericController<,,>)))
+                o.BaseType.GetGenericTypeDefinition() == typeof(GenericController<,,,>)))
             {
-                feature.Controllers.Add(typeof(GenericController<,,>).MakeGenericType(entityType, entityType, entityType).GetTypeInfo());
+                var searchModelType = typeof(PaginationViewModel<>).MakeGenericType(entityType);
+                feature.Controllers.Add(typeof(GenericController<,,,>).MakeGenericType(entityType, entityType, entityType, searchModelType).GetTypeInfo());
             }
         }
     }
