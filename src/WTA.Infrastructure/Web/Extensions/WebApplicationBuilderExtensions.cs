@@ -37,6 +37,7 @@ using WTA.Application.Services.Permissions;
 using WTA.Application.Services.Users;
 using WTA.Infrastructure.Data;
 using WTA.Infrastructure.EventBus;
+using WTA.Infrastructure.ExportImport;
 using WTA.Infrastructure.Mapper;
 using WTA.Infrastructure.Services;
 using WTA.Infrastructure.Uri;
@@ -78,7 +79,7 @@ public static class WebApplicationBuilderExtensions
                 .Enrich.FromLogContext()
                 .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
             }, writeToProviders: true);
-            builder.Configure();
+            builder.ConfigureServices();
             builder.Services.AddSkyAPM();
 
             var app = builder.Build();
@@ -97,7 +98,7 @@ public static class WebApplicationBuilderExtensions
         }
     }
 
-    public static void Configure(this WebApplicationBuilder builder)
+    public static void ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddWebEncoders(options => options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
         builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
@@ -140,7 +141,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddTransient<IPermissionService, PermissionService>();
         builder.Services.AddTransient<ITestService<User>, TestService>();
         builder.Services.AddScoped<ITenantService, TenantService>();
-
+        builder.Services.AddImportExport();
     }
 
     private static void AddAuthentication(WebApplicationBuilder builder)

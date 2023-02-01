@@ -9,9 +9,9 @@ public class GenericControllerNameConventionAttribute : Attribute, IControllerMo
 {
     public void Apply(ControllerModel controller)
     {
-        if (controller.ControllerType.IsGenericType || controller.ControllerType.BaseType.IsGenericType)
+        if (controller.ControllerType.IsGenericType || controller.ControllerType.BaseType!.IsGenericType)
         {
-            var controllerType = controller.ControllerType.IsGenericType ? controller.ControllerType : controller.ControllerType.BaseType;
+            var controllerType = controller.ControllerType.IsGenericType ? controller.ControllerType : controller.ControllerType.BaseType!;
             if (controllerType.GetGenericTypeDefinition() == typeof(GenericController<,,,>))
             {
                 var entityType = controllerType.GenericTypeArguments[0];
