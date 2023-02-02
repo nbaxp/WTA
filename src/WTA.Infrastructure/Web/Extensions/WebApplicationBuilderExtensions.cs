@@ -283,6 +283,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
+            options.DocumentFilter<DisplayDocumentFilter>();
             options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.Http,
@@ -291,13 +292,13 @@ public static class WebApplicationBuilderExtensions
             });
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-            {
-                new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth" }
-                },
-                Array.Empty<string>()
-            }
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth" }
+                    },
+                    Array.Empty<string>()
+                }
             });
         });
     }
