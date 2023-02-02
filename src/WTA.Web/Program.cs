@@ -1,4 +1,4 @@
-using WTA.Infrastructure.Web.Extensions;
+using WTA.Infrastructure.Mvc;
 
 WebApplication.CreateBuilder(args).BuildAndRun();
 

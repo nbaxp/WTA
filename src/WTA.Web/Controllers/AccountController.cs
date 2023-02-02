@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using WTA.Application.Services.Users;
-using WTA.Infrastructure.Web.Extensions;
-using WTA.Infrastructure.Web.Mvc;
+using WTA.Infrastructure.Extensions;
+using WTA.Infrastructure.Mvc;
 
 namespace WTA.Web.Controllers;
 

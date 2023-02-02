@@ -6,7 +6,7 @@ public static class ImportExportExtensions
 {
     public static void AddImportExport(this IServiceCollection services)
     {
-        services.AddScoped<IImportExportService, ClosedXMLImportService>();
+        services.AddScoped<IImportExportService, ClosedXmlImportExportService>();
     }
 
     public static void AddImportExport<T>(this IServiceCollection services) where T : class, IImportExportService

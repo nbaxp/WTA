@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Domain.System;
-using WTA.Infrastructure.Web.Extensions;
-using WTA.Web.Models;
+using WTA.Infrastructure.Extensions;
 
 namespace WTA.Web.Controllers;
 
