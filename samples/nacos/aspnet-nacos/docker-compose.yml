@@ -1,0 +1,17 @@
+﻿version: "3.8"
+
+services:
+  nacos:
+    image: nacos/nacos-server:v2.2.0
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+    ports:
+      - 8848:8848
+      - 9848:9848
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf/nacos:/home/nacos/conf
+      - ./data/nacos:/home/nacos/data
+      - ./logs/nacos:/home/nacos/logs

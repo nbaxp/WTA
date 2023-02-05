@@ -1,4 +1,0 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
-@inject IWebHostEnvironment env
-@Html.Raw(File.ReadAllText(System.IO.Path.Combine(env.WebRootPath,"index.html")))
-@Html.Raw($"<!--{this.Context.Request.GetDisplayUrl()}-->")

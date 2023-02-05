@@ -4,6 +4,8 @@ LC_ALL=C
 FILES=$(git diff --cached --name-only --diff-filter=ACM "*.cs" | sed 's| |\\ |g')
 [ -z "$FILES" ] && exit 0
 
+cd be
+
 # Format all selected files
 echo "$FILES" | cat | xargs | sed -e 's/ /,/g' | xargs dotnet format --include true
 
