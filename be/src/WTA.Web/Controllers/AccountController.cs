@@ -10,11 +10,12 @@ namespace WTA.Web.Controllers;
 
 [Authorize]
 [Route("[controller]/[action]")]
+[Tags("Get:Index", "Get:Login")]
 public class AccountController : Controller
 {
     private readonly IStringLocalizer _localizer;
-    private readonly IUserService _userService;
     private readonly ITokenService _tokenService;
+    private readonly IUserService _userService;
 
     public AccountController(IStringLocalizer localizer, IUserService userService, ITokenService tokenService)
     {
@@ -29,8 +30,8 @@ public class AccountController : Controller
         return View();
     }
 
-    [AllowAnonymous]
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Login(string returnUrl)
     {
         var model = new LoginModel { ReturnUrl = returnUrl };
