@@ -25,7 +25,7 @@ public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>
             }
             else
             {
-                options.SwaggerDoc("default", new OpenApiInfo { Title = "Default" });
+                options.SwaggerDoc("Default", new OpenApiInfo { Title = "Default" });
             }
         }
     }

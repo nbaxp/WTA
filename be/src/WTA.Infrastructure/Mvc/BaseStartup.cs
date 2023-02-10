@@ -6,6 +6,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -28,6 +29,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Debugging;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WTA.Application;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Authentication;
 using WTA.Infrastructure.Authentication;
@@ -53,6 +55,7 @@ public class BaseStartup
 
     public virtual void Configure(WebApplication app)
     {
+        ApplicationContext.Configure(app.Services);
         UseStaticFiles(app);
         UseRouting(app);
         UseLocalization(app);
@@ -323,6 +326,7 @@ public class BaseStartup
         {
             options.DocumentFilter<SwaggerFilter>();
             options.OperationFilter<SwaggerFilter>();
+            options.DocInclusionPredicate((docName, api) => api.GroupName == null || api.GroupName == docName);
             options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.Http,
@@ -392,7 +396,7 @@ public class BaseStartup
                 }
                 else
                 {
-                    options.SwaggerEndpoint($"/swagger/default/swagger.json", "Default");
+                    options.SwaggerEndpoint($"/swagger/Default/swagger.json", "Default");
                 }
             }
         });

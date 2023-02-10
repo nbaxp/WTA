@@ -106,7 +106,7 @@ services:
       - ./conf/nginx/conf.d:/etc/nginx/conf.d
       - ./conf/nginx/certs:/etc/nginx/certs
       - ./conf/nginx/secrets:/etc/nginx/secrets
-      - ./log/nginx:/var/log/nginx
+      - ./logs/nginx:/var/log/nginx
     restart: always
   nacos:
     image: nacos/nacos-server:${NACOS_VERSION}

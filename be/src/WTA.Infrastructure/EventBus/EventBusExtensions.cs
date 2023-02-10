@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using WTA.Application.Abstractions.EventBus;
+using WTA.Application.Abstractions.Extensions;
 
 namespace WTA.Infrastructure.EventBus;
 
@@ -14,7 +15,7 @@ public static class EventBusExtensions
     public static void AddEventBus<T>(this IServiceCollection services, Func<Assembly, bool>? predicate) where T : class, IEventPublisher
     {
         services.AddTransient<IEventPublisher, T>();
-        AppDomain.CurrentDomain.GetAssemblies().WhereIf(predicate != null, predicate).SelectMany(o => o.GetTypes())
+        AppDomain.CurrentDomain.GetAssemblies().WhereIf(predicate != null, predicate!).SelectMany(o => o.GetTypes())
           .Where(t => t.GetInterfaces().Any(o => o.IsGenericType && o.GetGenericTypeDefinition() == typeof(IEventHander<>)))
           .ToList()
           .ForEach(type =>

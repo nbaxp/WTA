@@ -115,7 +115,6 @@ public class GenericController<TEntity, TModel, TListModel, TSearchModel> : Cont
     public virtual IActionResult Edit()
     {
         throw new NotImplementedException();
-
     }
 
     [HttpPost]
@@ -137,18 +136,22 @@ public class GenericController<TEntity, TModel, TListModel, TSearchModel> : Cont
         throw new NotImplementedException();
     }
 
-    #endregion
+    #endregion Create/Edit/Delete
 
     #region Export/Import
+
+    [HttpGet]
     public virtual IActionResult Export([FromBody] TSearchModel model, [FromQuery] bool all)
     {
         //return File(bytes, MimeTypes.TextXlsx, "categories.xlsx");
         throw new NotImplementedException();
     }
 
+    [HttpPost]
     public virtual IActionResult Import(IFormFile importexcelfile)
     {
         throw new NotImplementedException();
     }
-    #endregion
+
+    #endregion Export/Import
 }

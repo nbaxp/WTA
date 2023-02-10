@@ -14,7 +14,7 @@ public class UserController : GenericController<User, User, User, PaginationView
     public UserController(IRepository<User> repository) : base(repository)
     {
         var filter = new TestModel { UserName = "admin" }.CreateExpression<User>();
-        var users = repository.Query().WhereIf(filter != null, filter).ToList();
+        // var users = repository.Query().WhereIf(filter != null, filter).ToList();
     }
 
     public override Task<IActionResult> Index([FromQuery] PaginationViewModel<User> model)
