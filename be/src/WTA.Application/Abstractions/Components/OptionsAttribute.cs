@@ -1,9 +1,9 @@
 namespace WTA.Application.Abstractions.Components;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ConfigurationAttribute : Attribute
+public class OptionsAttribute : Attribute
 {
-    public ConfigurationAttribute(string? section = null)
+    public OptionsAttribute(string? section = null)
     {
         Section = section;
     }

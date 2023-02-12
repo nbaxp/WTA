@@ -1,4 +1,4 @@
-namespace WTA.Infrastructure.GenericControllers;
+namespace WTA.Infrastructure.Controllers;
 
 public class PaginationViewModel<T>
 {

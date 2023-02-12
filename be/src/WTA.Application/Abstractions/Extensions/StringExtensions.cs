@@ -6,4 +6,10 @@ public static class StringExtensions
     {
         return input.EndsWith(value) ? input.Substring(0, input.Length - value.Length) : input;
     }
+
+    public static string TrimEndOptions(this string input)
+    {
+        var value = "Options";
+        return input.EndsWith(value) ? input.Substring(0, input.Length - value.Length) : input;
+    }
 }

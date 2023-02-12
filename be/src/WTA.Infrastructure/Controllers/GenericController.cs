@@ -5,7 +5,7 @@ using WTA.Application.Abstractions.Data;
 using WTA.Application.Abstractions.Extensions;
 using WTA.Infrastructure.Extensions;
 
-namespace WTA.Infrastructure.GenericControllers;
+namespace WTA.Infrastructure.Controllers;
 
 /// <summary>
 /// 泛型控制器

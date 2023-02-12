@@ -2,7 +2,7 @@ using WTA.Application.Abstractions.Components;
 
 namespace WTA.Application.Authentication;
 
-[Configuration]
+[Options]
 public class IdentityOptions
 {
     public bool SupportsUserLockout { get; set; }

@@ -5,8 +5,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Text.Unicode;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -29,33 +29,47 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Debugging;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using WTA.Application;
+using WTA.Application.Abstractions.Components;
 using WTA.Application.Abstractions.Data;
+using WTA.Application.Abstractions.Extensions;
 using WTA.Application.Authentication;
+using WTA.Application.Services;
 using WTA.Infrastructure.Authentication;
+using WTA.Infrastructure.Controllers;
 using WTA.Infrastructure.Data;
 using WTA.Infrastructure.DataAnnotations;
+using WTA.Infrastructure.EventBus;
 using WTA.Infrastructure.Extensions;
-using WTA.Infrastructure.GenericControllers;
 using WTA.Infrastructure.Localization;
 using WTA.Infrastructure.Routing;
 using WTA.Infrastructure.Swagger;
 using WTA.Resources;
 
-namespace WTA.Infrastructure.Mvc;
-
-public class BaseStartup
+public class WebApp
 {
-    private readonly string _name;
-
-    public BaseStartup()
+    static WebApp()
     {
-        _name = Assembly.GetEntryAssembly()?.GetName().Name!;
+        Current = new WebApp();
+        Include = o => !Regex.IsMatch(o.FullName!, "^(System|Microsoft|Azure|Swashbuckle|Grpc|Serilog|MiniProfiler)");
     }
+
+    private WebApp()
+    {
+        Name = Assembly.GetEntryAssembly()?.GetName().Name!;
+    }
+
+    /// <summary>
+    /// WebApp 实例
+    /// </summary>
+    public static WebApp Current { get; }
+
+    public string Name { get; }
+
+    public static Func<Assembly, bool> Include { get; set; }
 
     public virtual void Configure(WebApplication app)
     {
-        ApplicationContext.Configure(app.Services);
+        WTA.Application.App.Init(app.Services);
         UseStaticFiles(app);
         UseRouting(app);
         UseLocalization(app);
@@ -73,9 +87,23 @@ public class BaseStartup
         AddAuthentication(builder);
         AddCache(builder);
         AddDbContext(builder);
+        AddDefaultServices(builder);
+        AddDefaultOptions(builder);
+        builder.Services.AddEventBus();
+        builder.Services.AddTransient(typeof(IApplicationService<>), typeof(ApplicationService<>));
     }
 
-    public void Start(string[] args)
+    /// <summary>
+    /// 启动应用
+    /// </summary>
+    /// <param name="args">命令行参数</param>
+    /// <param name="builder">WebApplicationBuilder 配置服务</param>
+    /// <param name="app">WebApplication 配置应用</param>
+    /// <param name="configureAssembly">程序集扫描约束</param>
+    public void Start(string[] args,
+        Action<WebApplicationBuilder>? configureBuilder = null,
+        Action<WebApplication>? configureApp = null,
+        Func<Assembly, bool>? configureAssembly = null)
     {
         var aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         if (aspNetCoreEnvironment == "Development")
@@ -88,7 +116,7 @@ public class BaseStartup
             .CreateBootstrapLogger();
         try
         {
-            Log.Information($"{_name} start");
+            Log.Information($"{Name} start");
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.UseSerilog((hostingContext, services, configBuilder) =>
             {
@@ -98,9 +126,11 @@ public class BaseStartup
                 .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
             }, writeToProviders: true);
             this.ConfigureServices(builder);
+            configureBuilder?.Invoke(builder);
             var app = builder.Build();
             app.UseSerilogRequestLogging();
             this.Configure(app);
+            configureApp?.Invoke(app);
             app.Run();
         }
         catch (Exception ex)
@@ -109,12 +139,23 @@ public class BaseStartup
         }
         finally
         {
-            Log.Information($"{_name} stop");
+            Log.Information($"{Name} stop");
             Log.CloseAndFlush();
         }
     }
 
     #region add services
+
+    protected virtual void AddMiniProfiler(WebApplicationBuilder builder)
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddMiniProfiler(options =>
+            {
+                options.RouteBasePath = "/profiler";
+            }).AddEntityFramework();
+        }
+    }
 
     protected virtual void AddAuthentication(WebApplicationBuilder builder)
     {
@@ -215,7 +256,7 @@ public class BaseStartup
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(_name!, builder =>
+            options.AddPolicy(Name!, builder =>
             {
                 builder.SetIsOriginAllowed(isOriginAllowed => true)
                 .AllowAnyMethod()
@@ -346,9 +387,89 @@ public class BaseStartup
         });
     }
 
+    /// <summary>
+    /// 根据 ImplementationAttribute 自动配置依赖注入
+    /// </summary>
+    public static void AddDefaultServices(WebApplicationBuilder builder)
+    {
+        AppDomain.CurrentDomain.GetAssemblies()
+            .Where(WebApp.Include)
+            .Where(o => o.GetTypes()
+            .Any(o => o.GetCustomAttributes(typeof(ServiceAttribute<>)).Any()))
+            .SelectMany(o => o.GetTypes())
+            .Where(type => type.GetCustomAttributes(typeof(ServiceAttribute<>)).Any())
+            .ForEach(type =>
+            {
+                if (type.GetCustomAttribute(typeof(ServiceAttribute<>)) is IServiceAttribute implementation)
+                {
+                    var descriptor = new ServiceDescriptor(implementation.ServiceType, type, implementation.Lifetime);
+                    builder.Services.Add(descriptor);
+                }
+            });
+    }
+
+    /// <summary>
+    /// 根据 OptionsAttribute 自动配置 Options
+    /// </summary>
+    public void AddDefaultOptions(WebApplicationBuilder builder)
+    {
+        var configureMethod = typeof(OptionsConfigurationServiceCollectionExtensions)
+            .GetMethod(nameof(OptionsConfigurationServiceCollectionExtensions.Configure),
+            new[] { typeof(IServiceCollection), typeof(IConfiguration) });
+        AppDomain.CurrentDomain.GetAssemblies()
+            .Where(o => o.GetTypes()
+            .Any(o => o.GetCustomAttributes(typeof(OptionsAttribute)).Any()))
+            .SelectMany(o => o.GetTypes())
+            .Where(type => type.GetCustomAttributes<OptionsAttribute>().Any())
+            .ForEach(type =>
+            {
+                var attribute = type.GetCustomAttribute<OptionsAttribute>()!;
+                var configurationSection = builder.Configuration.GetSection(attribute.Section ?? type.Name.TrimEndOptions());
+                configureMethod?.MakeGenericMethod(type).Invoke(null, new object[] { builder.Services, configurationSection });
+            });
+    }
+
     #endregion add services
 
     #region configure
+
+    protected virtual void UseAuthorization(WebApplication app)
+    {
+        app.UseCors(Name);
+        app.UseAuthentication();
+        app.UseAuthorization();
+    }
+
+    protected virtual void UseDatabase(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
+        if (db.Database.EnsureCreated())
+        {
+            scope.ServiceProvider.GetRequiredService<IDbSeed>().Initialize();
+        }
+    }
+
+    protected virtual void UseLocalization(WebApplication app)
+    {
+        var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
+        app.UseRequestLocalization(localizationOptions);
+        Thread.CurrentThread.CurrentCulture = localizationOptions.DefaultRequestCulture.Culture;
+        Thread.CurrentThread.CurrentUICulture = localizationOptions.DefaultRequestCulture.UICulture;
+    }
+
+    protected virtual void UseRouting(WebApplication app)
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseMiniProfiler();
+        }
+        var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+        var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
+        app.UseRouting();
+        app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
+        app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
+    }
 
     protected virtual void UseStaticFiles(WebApplication app)
     {
@@ -363,23 +484,6 @@ public class BaseStartup
             ServeUnknownFileTypes = true,
             DefaultContentType = "application/octet-stream"
         });
-    }
-
-    protected virtual void UseRouting(WebApplication app)
-    {
-        var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-        var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
-        app.UseRouting();
-        app.MapControllerRoute(name: "area", pattern: "{area:exists:slugify}/{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
-        app.MapControllerRoute(name: "default", pattern: "{controller:slugify=Home}/{action:slugify=Index}/{id?}", defaults: defaults);
-    }
-
-    protected virtual void UseLocalization(WebApplication app)
-    {
-        var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!.Value;
-        app.UseRequestLocalization(localizationOptions);
-        Thread.CurrentThread.CurrentCulture = localizationOptions.DefaultRequestCulture.Culture;
-        Thread.CurrentThread.CurrentUICulture = localizationOptions.DefaultRequestCulture.UICulture;
     }
 
     protected virtual void UseSwagger(WebApplication app)
@@ -400,23 +504,6 @@ public class BaseStartup
                 }
             }
         });
-    }
-
-    protected virtual void UseAuthorization(WebApplication app)
-    {
-        app.UseCors(_name);
-        app.UseAuthentication();
-        app.UseAuthorization();
-    }
-
-    protected virtual void UseDatabase(WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        using var db = scope.ServiceProvider.GetRequiredService<DbContext>();
-        if (db.Database.EnsureCreated())
-        {
-            scope.ServiceProvider.GetRequiredService<IDbSeed>().Initialize();
-        }
     }
 
     #endregion configure

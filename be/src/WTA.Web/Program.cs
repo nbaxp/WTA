@@ -1,6 +1,4 @@
-using WTA.Web;
-
-new Startup().Start(args);
+WebApp.Current.Start(args);
 
 //WebApplication.CreateBuilder(args).BuildAndRun();
 

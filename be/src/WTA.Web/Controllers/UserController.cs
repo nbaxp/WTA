@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Domain.System;
 using WTA.Infrastructure.Extensions;
-using WTA.Infrastructure.GenericControllers;
+using WTA.Infrastructure.Controllers;
 
 namespace WTA.Web.Controllers;
 

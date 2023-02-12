@@ -8,6 +8,6 @@ public abstract class BaseEntity
 
     public BaseEntity()
     {
-        Id = ApplicationContext.Current.NewGuid();
+        Id = App.Current.NewGuid();
     }
 }

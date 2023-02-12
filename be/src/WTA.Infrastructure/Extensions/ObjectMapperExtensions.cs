@@ -85,10 +85,10 @@ public static class ObjectMapperExtensions
                 var listType = typeof(List<>).MakeGenericType(targetGenericType);
                 var addMethod = listType.GetMethod("Add");
                 var list = Activator.CreateInstance(listType);
-                var sourceList = (IEnumerable)sp.GetValue(source);
+                var sourceList = (IEnumerable)sp.GetValue(source)!;
                 foreach (var item in sourceList)
                 {
-                    addMethod.Invoke(list, new[] { Activator.CreateInstance(targetGenericType).FromObject(item) });
+                    addMethod?.Invoke(list, new[] { Activator.CreateInstance(targetGenericType).FromObject(item) });
                 }
                 tp.SetValue(target, list);
                 return;

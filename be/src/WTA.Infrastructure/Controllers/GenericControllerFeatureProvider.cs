@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using WTA.Application.Abstractions.Domain;
 
-namespace WTA.Infrastructure.GenericControllers;
+namespace WTA.Infrastructure.Controllers;
 
 public class GenericControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
 {

@@ -7,14 +7,14 @@ public static class UrlHelperExtensions
 {
     public static string GetPath(this string url)
     {
-        using var scope = ApplicationContext.Current.Services!.CreateScope();
+        using var scope = App.Current.Services!.CreateScope();
         var helper = scope.ServiceProvider.GetRequiredService<IUrlService>();
         return helper.GetPath(url);
     }
 
     public static string GetQuery(this string url)
     {
-        using var scope = ApplicationContext.Current.Services!.CreateScope();
+        using var scope = App.Current.Services!.CreateScope();
         var helper = scope.ServiceProvider.GetRequiredService<IUrlService>();
         return helper.GetQuery(url);
     }

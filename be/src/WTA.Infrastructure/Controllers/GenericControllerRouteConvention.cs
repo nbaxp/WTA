@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using WTA.Application.Abstractions.Domain;
 
-namespace WTA.Infrastructure.GenericControllers;
+namespace WTA.Infrastructure.Controllers;
 
 public class GenericControllerRouteConvention : IControllerModelConvention
 {

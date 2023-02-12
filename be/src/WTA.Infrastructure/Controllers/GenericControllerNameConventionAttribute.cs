@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using WTA.Application.Abstractions.Domain;
 
-namespace WTA.Infrastructure.GenericControllers;
+namespace WTA.Infrastructure.Controllers;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 public class GenericControllerNameConventionAttribute : Attribute, IControllerModelConvention

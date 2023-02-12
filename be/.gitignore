@@ -1,6 +1,7 @@
 *.suo
 *.user
 .vs/
+.idea/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

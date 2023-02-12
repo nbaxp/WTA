@@ -20,14 +20,14 @@ public class DefaultLinqDynamic : Application.Abstractions.Data.ILinqDynamic
 
     public IQueryable<TEntity> Where<TEntity, TModel>(IQueryable<TEntity> source, TModel model)
     {
-        var properties = model.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
+        var properties = model!.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
         foreach (var property in properties)
         {
             var propertyName = property.Name;
             var propertyValue = property.GetValue(model, null);
             if (propertyValue != null)
             {
-                var attributes = property.GetCustomAttributes<OperatorTypeAttribute>();
+                var attributes = property.GetCustomAttributes<OperatorTypeAttribute>()!;
                 var whereAttributes = attributes.Where(o => o.OperatorType != OperatorType.OrderBy).ToList();
                 foreach (var attribute in whereAttributes)
                 {
