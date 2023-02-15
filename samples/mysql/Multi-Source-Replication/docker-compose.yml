@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  mysql-101:
+    container_name: mysql-101
+    restart: always
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/mysql/mysql-101:/var/lib/mysql
+      - ./conf/mysql/mysql-101/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./conf/mysql/mysql-101/initdb.d:/docker-entrypoint-initdb.d
+    command: bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && docker-entrypoint.sh --default-authentication-plugin=mysql_native_password"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+  mysql-102:
+    container_name: mysql-102
+    restart: always
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3307:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/mysql//mysql-102:/var/lib/mysql
+      - ./conf/mysql/mysql-102/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./conf/mysql/mysql-102/initdb.d:/docker-entrypoint-initdb.d
+    command: bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && docker-entrypoint.sh --default-authentication-plugin=mysql_native_password"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+  mysql-201:
+    container_name: mysql-201
+    restart: always
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3308:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/mysql/mysql-201:/var/lib/mysql
+      - ./conf/mysql/mysql-201/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./conf/mysql/mysql-201/initdb.d:/docker-entrypoint-initdb.d
+    command: bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && docker-entrypoint.sh --default-authentication-plugin=mysql_native_password"
+    depends_on:
+      - mysql-101
+      - mysql-102
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
