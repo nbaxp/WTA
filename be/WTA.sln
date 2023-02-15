@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WTA.Infrastructure", "src\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WTA.Application.Tests", "test\WTA.Application.Tests\WTA.Application.Tests.csproj", "{7F1D1678-8868-4BDA-8C5F-87F3C49985C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WTA.Resources", "src\WTA.Resources\WTA.Resources.csproj", "{40BF3E9D-A29C-4532-8A49-1B02D4161AD3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{7F1D1678-8868-4BDA-8C5F-87F3C49985C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F1D1678-8868-4BDA-8C5F-87F3C49985C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F1D1678-8868-4BDA-8C5F-87F3C49985C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40BF3E9D-A29C-4532-8A49-1B02D4161AD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40BF3E9D-A29C-4532-8A49-1B02D4161AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40BF3E9D-A29C-4532-8A49-1B02D4161AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40BF3E9D-A29C-4532-8A49-1B02D4161AD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,7 +54,6 @@ Global
 		{40C4EF8A-7278-4C8B-9B1C-E3C486C7EB87} = {04305AA9-C187-406C-B285-B3466DDC035D}
 		{8F98AAA3-F530-48AE-8D8C-D5C736635FA3} = {04305AA9-C187-406C-B285-B3466DDC035D}
 		{7F1D1678-8868-4BDA-8C5F-87F3C49985C5} = {9BBFEA9C-F7D1-4390-936E-EE9EC557E9B9}
-		{40BF3E9D-A29C-4532-8A49-1B02D4161AD3} = {04305AA9-C187-406C-B285-B3466DDC035D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59CC816E-23CD-4B63-A993-79F4BC97F168}

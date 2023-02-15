@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.Extensions.Localization;
-using WTA.Resources;
+using WTA.Application.Resources;
 
 namespace WTA.Infrastructure.Localization;
 

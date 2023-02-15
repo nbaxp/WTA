@@ -33,6 +33,7 @@ using WTA.Application.Abstractions.Components;
 using WTA.Application.Abstractions.Data;
 using WTA.Application.Abstractions.Extensions;
 using WTA.Application.Authentication;
+using WTA.Application.Resources;
 using WTA.Application.Services;
 using WTA.Infrastructure.Authentication;
 using WTA.Infrastructure.Controllers;
@@ -43,7 +44,6 @@ using WTA.Infrastructure.Extensions;
 using WTA.Infrastructure.Localization;
 using WTA.Infrastructure.Routing;
 using WTA.Infrastructure.Swagger;
-using WTA.Resources;
 
 public class WebApp
 {
@@ -145,17 +145,6 @@ public class WebApp
     }
 
     #region add services
-
-    protected virtual void AddMiniProfiler(WebApplicationBuilder builder)
-    {
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddMiniProfiler(options =>
-            {
-                options.RouteBasePath = "/profiler";
-            }).AddEntityFramework();
-        }
-    }
 
     protected virtual void AddAuthentication(WebApplicationBuilder builder)
     {
@@ -460,10 +449,6 @@ public class WebApp
 
     protected virtual void UseRouting(WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseMiniProfiler();
-        }
         var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
         var defaults = new { culture = requestLocalizationOptions.DefaultRequestCulture.Culture.Name };
         app.UseRouting();
