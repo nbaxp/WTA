@@ -3,9 +3,11 @@ using System.Linq.Dynamic.Core;
 using System.Reflection;
 using Microsoft.OpenApi.Extensions;
 using WTA.Application.Abstractions.Application;
+using WTA.Application.Abstractions.Components;
 
 namespace WTA.Infrastructure.Data;
 
+[Service<Application.Abstractions.Data.ILinqDynamic>]
 public class DefaultLinqDynamic : Application.Abstractions.Data.ILinqDynamic
 {
     public IQueryable<T> Where<T>(IQueryable<T> source, string queryString, params object[] args)
@@ -18,7 +20,7 @@ public class DefaultLinqDynamic : Application.Abstractions.Data.ILinqDynamic
         return source.OrderBy(ordering, args);
     }
 
-    public IQueryable<TEntity> Where<TEntity, TModel>(IQueryable<TEntity> source, TModel model)
+    public IQueryable<TEntity> Query<TEntity, TModel>(IQueryable<TEntity> source, TModel model)
     {
         var properties = model!.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
         foreach (var property in properties)
@@ -28,23 +30,15 @@ public class DefaultLinqDynamic : Application.Abstractions.Data.ILinqDynamic
             if (propertyValue != null)
             {
                 var attributes = property.GetCustomAttributes<OperatorTypeAttribute>()!;
-                var whereAttributes = attributes.Where(o => o.OperatorType != OperatorType.OrderBy).ToList();
-                foreach (var attribute in whereAttributes)
+                var where = attributes.OrderBy(o => o.Order).ToList();
+                foreach (var attribute in where)
                 {
                     if (typeof(TEntity).GetProperty(propertyName) == null)
                     {
                         continue;
                     }
                     var expression = attribute.OperatorType.GetAttributeOfType<ExpressionAttribute>().Expression;
-                    if (attribute.OperatorType != OperatorType.OrderBy)
-                    {
-                        source = source.Where(string.Format(CultureInfo.InvariantCulture, expression, propertyName), propertyValue);
-                    }
-                }
-                var orderByAttributes = attributes.Where(o => o.OperatorType == OperatorType.OrderBy).ToList();
-                foreach (var attribute in orderByAttributes.OrderBy(o => o.OperatorType))
-                {
-                    source = source.OrderBy($"{propertyValue}");
+                    source = source.Where(string.Format(CultureInfo.InvariantCulture, expression, propertyName), propertyValue);
                 }
             }
         }

@@ -18,10 +18,10 @@ public static class IQueryableExtensions
         return service.OrderBy(source, ordering, args);
     }
 
-    public static IQueryable<TEntity> Where<TEntity, TModel>(this IQueryable<TEntity> source, TModel model)
+    public static IQueryable<TEntity> Query<TEntity, TModel>(this IQueryable<TEntity> source, TModel model)
     {
         using var scope = App.Current.Services!.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<ILinqDynamic>();
-        return service.Where(source, model);
+        return service.Query(source, model);
     }
 }

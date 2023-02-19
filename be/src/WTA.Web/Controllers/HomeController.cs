@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WTA.Application.Abstractions.Data;
 using WTA.Application.Abstractions.EventBus;
 using WTA.Application.Domain.System;
 using WTA.Application.Services;
@@ -14,11 +16,13 @@ public class HomeController : Controller
 
     public HomeController(ILogger<HomeController> logger,
         IEventPublisher eventPublisher,
+        IRepository<User> repository,
         IApplicationService<Role> service1,
         IApplicationService<User> service2)
     {
         this._logger = logger;
         this._eventPublisher = eventPublisher;
+        var users = repository.Query().AsNoTracking().Select(o => new { o.UserName, o.UserRoles }).ToList();
     }
 
     public IActionResult Index()

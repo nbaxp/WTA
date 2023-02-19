@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ public class GenericController<TEntity, TModel, TListModel, TSearchModel> : Cont
                 var query = _repository.AsNoTracking();
                 if (!string.IsNullOrWhiteSpace(model.Query))
                 {
-                    query = query.Where(model.Query);
+                    query = query.Query(model.Query);
                 }
                 model.TotalCount = await query.CountAsync().ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(model.OrderBy))
@@ -64,6 +65,20 @@ public class GenericController<TEntity, TModel, TListModel, TSearchModel> : Cont
         {
             return Problem(ex.Message);
         }
+    }
+
+    [HttpGet]
+    public virtual IActionResult List([FromQuery] object model)
+    {
+        var query = _repository.AsNoTracking();
+        query = query.Query(model);
+        dynamic result = new ExpandoObject();
+        result.Total = query.Count();
+        var pageSize = model.GetPageSize();
+        var pageIndex = model.GetPageIndex();
+        result.List = query.Skip(pageSize * (pageIndex - 1))
+            .Take(pageSize);
+        return Json(result);
     }
 
     #endregion List

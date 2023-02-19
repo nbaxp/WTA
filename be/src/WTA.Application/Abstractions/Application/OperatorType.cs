@@ -32,6 +32,9 @@ public enum OperatorType
     [Expression("{0}.EndsWith(@0)")]
     EndsWith,
 
-    [Expression("{0}.EndsWith(@0)")]
-    OrderBy
+    //[Expression("{0}")]
+    //OrderBy,
+
+    //[Expression("{0} desc")]
+    //OrderByDesc
 }

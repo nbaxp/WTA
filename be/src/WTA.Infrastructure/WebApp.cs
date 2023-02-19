@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
@@ -64,8 +65,10 @@ public class WebApp
     public static WebApp Current { get; }
 
     public string Name { get; }
-
     public static Func<Assembly, bool> Include { get; set; }
+    public IWebHostEnvironment? Environment { get; private set; }
+    public IConfiguration? Configuration { get; private set; }
+    public Microsoft.Extensions.Logging.ILogger? Logger { get; private set; }
 
     public virtual void Configure(WebApplication app)
     {
@@ -76,6 +79,9 @@ public class WebApp
         UseSwagger(app);
         UseAuthorization(app);
         UseDatabase(app);
+        this.Environment = app.Environment;
+        this.Configuration = app.Configuration;
+        this.Logger = app.Logger;
     }
 
     public virtual void ConfigureServices(WebApplicationBuilder builder)
@@ -105,7 +111,7 @@ public class WebApp
         Action<WebApplication>? configureApp = null,
         Func<Assembly, bool>? configureAssembly = null)
     {
-        var aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var aspNetCoreEnvironment = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         if (aspNetCoreEnvironment == "Development")
         {
             SelfLog.Enable(Console.WriteLine);

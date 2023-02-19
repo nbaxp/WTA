@@ -14,9 +14,6 @@ public class TestModel
     [OperatorType(OperatorType.Equal)]
     public string? UserName { get; set; }
 
-    [OperatorType(OperatorType.OrderBy)]
-    public string? OrderBy { get; set; }
-
     [OperatorType(OperatorType.Equal)]
     public bool EmailConfirmed { get; set; }
 }
